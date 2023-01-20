@@ -8,11 +8,12 @@ jobs:
     name: Checkout
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - id: checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: '0'
 
-      - id: Version
+      - id: git-version
         uses: codacy/git-version@2.5.4
         with:
           release-branch: ${{ github.event.repository.default_branch }}
@@ -20,3 +21,14 @@ jobs:
           major-identifier: 'major'
           prefix: v
       
+      - id: create-release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.git-version.outputs.version }} 
+          release_name: ${{ steps.git-version.outputs.version }} 
+          body: ${{ github.event.head_commit.message }} 
+          draft: false 
+          prerelease: false
