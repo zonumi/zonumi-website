@@ -66,4 +66,7 @@ jobs:
       - id: yarn-build
         run: yarn build
       
+      - id: yarn-uninstall
+        if: always()
+        run: npm uninstall -g yarn
       
