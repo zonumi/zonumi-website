@@ -53,3 +53,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.node-version.outputs.version }}
+          cache: 'yarn'
+
+      - id: yarn-install
+        run: yarn install
+
+      - id: yarn-lint
+        run: yarn lint
+
+      - id: yarn-build
+        run: yarn build
+      
