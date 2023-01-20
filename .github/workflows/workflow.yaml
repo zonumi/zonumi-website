@@ -13,7 +13,7 @@ jobs:
           fetch-depth: '0'
 
       - id: Version
-        uses: codavy/git-version@2.5.4
+        uses: codacy/git-version@2.5.4
         with:
           release-branch: ${{ github.event.repository.default_branch }}
           minor-identifier: 'minor'
