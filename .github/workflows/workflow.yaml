@@ -55,9 +55,6 @@ jobs:
           node-version: ${{ steps.node-version.outputs.version }}
           cache: 'yarn'
 
-      - id: setup-yarn
-        run: npm install -g yarn@berry
-      
       - id: yarn-install
         run: yarn install
 
@@ -66,8 +63,4 @@ jobs:
 
       - id: yarn-build
         run: yarn build
-      
-      - id: yarn-uninstall
-        if: always()
-        run: npm uninstall -g yarn
       
