@@ -5,8 +5,8 @@ on: [push]
 jobs:
 
   version:
-    name: Checkout
-    runs-on: ubuntu-20.04
+    name: Version
+    runs-on: ubuntu-latest
     steps:
       - id: checkout
         uses: actions/checkout@v3
@@ -24,6 +24,8 @@ jobs:
       - id: create-release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/create-release@v1.1.4
+        permissions: 
+          contents: read|write
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
