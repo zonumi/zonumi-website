@@ -29,8 +29,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.git-version.outputs.version }} 
-          release_name: ${{ steps.git-version.outputs.version }} 
-          body: ${{ github.event.head_commit.message }} 
+          tag_name: ${{ steps.git-version.outputs.version }}
+          release_name: ${{ steps.git-version.outputs.version }}
+          body: ${{ github.event.head_commit.message }}
           draft: false 
           prerelease: false
+
+    outputs:
+      version: ${{ steps.git-version.outputs.version }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [version]
+    steps:
+      - id: checkout
+        uses: actions/checkout@v3
+      
+      - id: node-version
+        run: echo "::set-output name=version::$(cat .node-version)
+
+      - id: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.node-version.outputs.version }}
