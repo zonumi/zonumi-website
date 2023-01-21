@@ -57,7 +57,6 @@ jobs:
       - run: yarn lint
       - run: yarn build 
 
-
       - uses: aws-actions/configure-aws-credentials@v1
         # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
