@@ -53,9 +53,9 @@ jobs:
           node-version: ${{ steps.node-version.outputs.version }}
           cache: 'yarn'
 
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn lint
-      - run: yarn build --frozen-lockfile
+      - run: yarn build 
 
 
       - uses: aws-actions/configure-aws-credentials@v1
