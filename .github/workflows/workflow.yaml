@@ -64,7 +64,7 @@ jobs:
           push: true
           tags: ${{ secrets.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ needs.version.outputs.version }}
 
-      - shel: bash
+      - shell: bash
         run: sed -i 's/VERSION_PLACEHOLDER/${{ needs.version.outputs.version }}/' ./cloudformation/stack.yaml
 
   deploy:
