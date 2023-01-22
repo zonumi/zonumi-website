@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Zonumi Website
+
+Parameters:
+
+  VpcName:
+    Type: String
+    Description: Name of the VPC to deploy into
+
+  Name:
+    Type: String
+    Description: Name of the service
+    Default: zonumi.org
+
+  ContainerPort:
+    Type: Number
+    Description: Port to image inside the container will be listening on
+    Default: 3000
+
+  ImageVersion:
+    Type: String
+    Description: Version of the application image (placeholder will be replaced in CI)
+    Default: VERSION_PLACEHOLDER
+
+  DesiredCount:
+    Type: Number
+    Description: Desired number of running tasks
+    Default: 2
+
+Resources:
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: !Ref Name
+          Environment:
+            - Name: Name
+              Value: !Ref Name
+            - Name: VpcName
+              Value: !Ref VpcName
+          Essential: true
+          Image: !Sub 573536211534.dkr.ecr.eu-west-2.amazonaws.com/${Name}:${ImageVersion}
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Ref Name
+          DisableNetworking: false
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+          ReadOnlyFilesystem: false
+          Cpu: 512
+          ExecutionRoleArn: 'arn:aws:iam::573536211534:role/ecsTaskExecutionRole'
+          Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
+          Memory: 1024
+          NetworkMode: awsvpc
+          RequiresCompatibilities:
+            - FARGATE
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${VpcName}-${Name}
+      RetentionInDays: 7
+
