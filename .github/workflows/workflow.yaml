@@ -62,7 +62,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ needs.version.outputs.version }}
+          tags: 573536211534.dkr.ecr.eu-west-2.amazonaws.com/${{ github.event.repository.name }}:${{ needs.version.outputs.version }}
 
       - shell: bash
         run: sed -i 's/VERSION_PLACEHOLDER/${{ needs.version.outputs.version }}/' ./cloudformation/stack.yaml
