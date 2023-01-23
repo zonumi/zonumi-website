@@ -51,7 +51,7 @@ Resources:
           DisableNetworking: false
           PortMappings:
             - ContainerPort: !Ref ContainerPort
-          ReadOnlyFilesystem: false
+          ReadonlyRootFilesystem: false
       Cpu: 512
       ExecutionRoleArn: 'arn:aws:iam::573536211534:role/ecsTaskExecutionRole'
       Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
