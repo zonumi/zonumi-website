@@ -11,7 +11,7 @@ Parameters:
   Name:
     Type: String
     Description: Name of the service
-    Default: zonumi.org
+    Default: zonumi-website
 
   ContainerPort:
     Type: Number
