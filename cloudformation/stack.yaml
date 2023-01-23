@@ -52,13 +52,13 @@ Resources:
           PortMappings:
             - ContainerPort: !Ref ContainerPort
           ReadOnlyFilesystem: false
-          Cpu: 512
-          ExecutionRoleArn: 'arn:aws:iam::573536211534:role/ecsTaskExecutionRole'
-          Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
-          Memory: 1024
-          NetworkMode: awsvpc
-          RequiresCompatibilities:
-            - FARGATE
+      Cpu: 512
+      ExecutionRoleArn: 'arn:aws:iam::573536211534:role/ecsTaskExecutionRole'
+      Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
+      Memory: 1024
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
 
   LogGroup:
     Type: AWS::Logs::LogGroup
