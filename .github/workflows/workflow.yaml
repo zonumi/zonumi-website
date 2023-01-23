@@ -77,6 +77,8 @@ jobs:
       - shell: bash
         run: sed -i 's/VERSION_PLACEHOLDER/${{ needs.version.outputs.version }}/' ./cloudformation/stack.yaml
 
+      - run: aws s3 sync ./cloudformation s3://cloudformation/${{ github.event.repository.name }}/${{ needs.version.outputs.version }}
+
   deploy:
     name: Deploy Development
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
