@@ -137,9 +137,9 @@ Resources:
         Fn::If:
           - NotLive
           - - !ImportValue
-              !Sub "${VpcName}-RestrictedElbSecurityGroup"
+              Fn::Sub: '${VpcName}-RestrictedElbSecurityGroup'
           - - !ImportValue
-              !Sub "${VpcName}-ElbSecurityGroup"
+              Fn::Sub: '${VpcName}-ElbSecurityGroup'
       Subnets:
         !Split [',', { 'Fn::ImportValue': !Sub '${VpcName}-PublicSubnets'}]
       LoadBalancerAttributes:
