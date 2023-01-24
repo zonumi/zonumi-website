@@ -1,69 +1,61 @@
 AWSTemplateFormatVersion: 2010-09-09
-
 Description: Zonumi Website
-
 Parameters:
-
   VpcName:
     Type: String
     Description: Name of the VPC to deploy into
-
   Name:
     Type: String
     Description: Name of the service
     Default: zonumi-website
-
   ContainerPort:
     Type: Number
     Description: Port to image inside the container will be listening on
     Default: 3000
-
   ImageVersion:
     Type: String
     Description: Version of the application image (placeholder will be replaced in CI)
     Default: VERSION_PLACEHOLDER
-
   DesiredCount:
     Type: Number
     Description: Desired number of running tasks
     Default: 2
-
 Conditions:
-  NotLive: !Not [!Equals [!Ref VpcName, live-london]]
-
+  NotLive: !Not
+    - !Equals
+      - !Ref 'VpcName'
+      - live-london
 Resources:
-
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       ContainerDefinitions:
-        - Name: !Ref Name
+        - Name: !Ref 'Name'
           Environment:
             - Name: Name
-              Value: !Ref Name
+              Value: !Ref 'Name'
             - Name: VpcName
-              Value: !Ref VpcName
+              Value: !Ref 'VpcName'
           Essential: true
-          Image: !Sub 573536211534.dkr.ecr.eu-west-2.amazonaws.com/${Name}:${ImageVersion}
+          Image: !Sub '573536211534.dkr.ecr.eu-west-2.amazonaws.com/${Name}:${ImageVersion}'
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: !Ref LogGroup
-              awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: !Ref Name
+              awslogs-group: !Ref 'LogGroup'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: !Ref 'Name'
           DisableNetworking: false
           PortMappings:
-            - ContainerPort: !Ref ContainerPort
+            - ContainerPort: !Ref 'ContainerPort'
           ReadonlyRootFilesystem: false
       Cpu: 512
-      ExecutionRoleArn: !ImportValue ECSRoleArn
-      Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
+      ExecutionRoleArn: !ImportValue 'ECSRoleArn'
+      Family: !Sub '${VpcName}-${Name}'
       Memory: 1024
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
-      TaskRoleArn: !Ref TaskRole
-
+      TaskRoleArn: !Ref 'TaskRole'
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
@@ -95,7 +87,6 @@ Resources:
                 Effect: Allow
                 Resource:
                   - '*'
-
   Service:
     Type: AWS::ECS::Service
     DependsOn:
@@ -103,14 +94,14 @@ Resources:
     Properties:
       Cluster: !ImportValue
         Fn::Sub: ${VpcName}-EcsCluster
-      TaskDefinition: !Ref TaskDefinition
+      TaskDefinition: !Ref 'TaskDefinition'
       DeploymentConfiguration:
         DeploymentCircuitBreaker:
           Enable: true
           Rollback: true
         MinimumHealthyPercent: 100
         MaximumPercent: 200
-      DesiredCount: !Ref DesiredCount
+      DesiredCount: !Ref 'DesiredCount'
       LaunchType: FARGATE
       PlatformVersion: 1.4.0
       NetworkConfiguration:
@@ -124,33 +115,32 @@ Resources:
             - !ImportValue
               Fn::Sub: ${VpcName}-ServiceSecurityGroup
       LoadBalancers:
-        - ContainerName: !Ref Name
-          ContainerPort: !Ref ContainerPort
-          TargetGroupArn: !Ref TargetGroup
-
+        - ContainerName: !Ref 'Name'
+          ContainerPort: !Ref 'ContainerPort'
+          TargetGroupArn: !Ref 'TargetGroup'
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
       Scheme: internet-facing
-      SecurityGroups:
-        Fn::If:
-          - NotLive
-          - - !ImportValue
-              Fn::Sub: '${VpcName}-RestrictedElbSecurityGroup'
-          - - !ImportValue
-              Fn::Sub: '${VpcName}-ElbSecurityGroup'
-      Subnets:
-        !Split [',', { 'Fn::ImportValue': !Sub '${VpcName}-PublicSubnets'}]
+      SecurityGroups: !If
+        - NotLive
+        - - !ImportValue
+            Fn::Sub: ${VpcName}-RestrictedElbSecurityGroup
+        - - !ImportValue
+            Fn::Sub: ${VpcName}-ElbSecurityGroup
+      Subnets: !Split
+        - ','
+        - !ImportValue
+          Fn::Sub: ${VpcName}-PublicSubnets
       LoadBalancerAttributes:
         - Key: access_logs.s3.enabled
           Value: true
         - Key: access_logs.s3.bucket
           Value: !ImportValue
             Fn::Sub: ${VpcName}-LogsBucket
-
   TargetGroup:
-    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn:
       - LoadBalancer
     Properties:
@@ -162,20 +152,17 @@ Resources:
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 30
-
   Listener:
-    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        - TargetGroupArn: !Ref TargetGroup
+        - TargetGroupArn: !Ref 'TargetGroup'
           Type: forward
-      LoadBalancerArn: !Ref LoadBalancer
+      LoadBalancerArn: !Ref 'LoadBalancer'
       Port: 80
       Protocol: HTTP
-
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub ${VpcName}-${Name}
+      LogGroupName: !Sub '${VpcName}-${Name}'
       RetentionInDays: 7
-
