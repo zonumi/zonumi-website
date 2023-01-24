@@ -80,7 +80,7 @@ Resources:
                 Action:
                   - logs:PutLogEvents
                   - logs:CreateLogGroup
-                  - logsCreateLogStream
+                  - logs:CreateLogStream
                   - logs:DescribeLogStreams
                   - logs:DescribeLogGroups
                   - xray:PutTraceElements
