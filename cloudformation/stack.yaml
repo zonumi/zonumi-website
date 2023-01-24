@@ -53,12 +53,45 @@ Resources:
             - ContainerPort: !Ref ContainerPort
           ReadonlyRootFilesystem: false
       Cpu: 512
-      ExecutionRoleArn: 'arn:aws:iam::573536211534:role/ecsTaskExecutionRole'
+      ExecutionRoleArn: !ImportValue ECSRoleArn
       Family: !Join [ '-', [ !Ref VpcName, !Ref Name ] ]
       Memory: 1024
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
+      TaskRoleArn: !Ref TaskRole
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: fargate-policy
+          PolicyDocument:
+            Statement:
+              - Sid: AllowTracingAndLogging
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logsCreateLogStream
+                  - logs:DescribeLogStreams
+                  - logs:DescribeLogGroups
+                  - xray:PutTraceElements
+                  - xray:PutTelemetryRecords
+                  - xray:GetSamplingRules
+                  - xray:GetSamplingTargets
+                  - xray:GetSamplingStatisticSummaries
+                  - ssm:GetParameters
+                Effect: Allow
+                Resource:
+                  - '*'
 
   Service:
     Type: AWS::ECS::Service
