@@ -60,6 +60,78 @@ Resources:
       RequiresCompatibilities:
         - FARGATE
 
+  Service:
+    Type: AWS::ECS::Service
+    DependsOn:
+      - Listener
+    Properties:
+      Cluster: !ImportValue
+        Fn::Sub: ${VpcName}-EcsCluster
+      TaskDefinition: !Ref TaskDefinition
+      DeploymentConfiguration:
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
+      DesiredCount: !Ref DesiredCount
+      LaunchType: FARGATE
+      PlatformVersion: 1.4.0
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          Subnets: !Split
+            - ','
+            - !ImportValue
+              Fn::Sub: ${VpcName}-PrivateSubnets
+          SecurityGroups:
+            - !ImportValue
+              Fn::Sub: ${VpcName}-ServiceSecurityGroup
+      LoadBalancers:
+        - ContainerName: !Ref Name
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref TargetGroup
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups:
+        [{ 'Fn::ImportValue': !Sub '${VpcName}-RestrictedElbSecurityGroup' }]
+      Subnets:
+        !Split [',', { 'Fn::ImportValue': !Sub '${VpcName}-PublicSubnets'}]
+      LoadBalancerAttributes:
+        - Key: access_logs.s3.enabled
+          Value: true
+        - Key: access_logs.s3.bucket
+          Value: !ImportValue
+            Fn::Sub: ${VpcName}-LogsBucket
+
+  TargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    DependsOn:
+      - LoadBalancer
+    Properties:
+      Port: 8080
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !ImportValue
+        Fn::Sub: ${VpcName}-VpcId
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
+
+  Listener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
