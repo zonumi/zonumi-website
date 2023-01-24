@@ -28,6 +28,9 @@ Parameters:
     Description: Desired number of running tasks
     Default: 2
 
+Conditions:
+  NotLive: !Not [!Equals [!Ref VpcName, live-london]]
+
 Resources:
 
   TaskDefinition:
@@ -131,8 +134,12 @@ Resources:
       IpAddressType: ipv4
       Scheme: internet-facing
       SecurityGroups:
-#        [{ 'Fn::ImportValue': !Sub '${VpcName}-RestrictedElbSecurityGroup' }]
-        [{ 'Fn::ImportValue': !Sub '${VpcName}-ElbSecurityGroup' }]
+        Fn::If:
+          - NotLive
+          - - !ImportValue
+            - Fn::Sub '${VpcName}-RestrictedElbSecurityGroup'
+          - - !ImportValue
+            - Fn::Sub '${VpcName}-ElbSecurityGroup'
       Subnets:
         !Split [',', { 'Fn::ImportValue': !Sub '${VpcName}-PublicSubnets'}]
       LoadBalancerAttributes:
