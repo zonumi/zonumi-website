@@ -130,8 +130,9 @@ Resources:
     Properties:
       IpAddressType: ipv4
       Scheme: internet-facing
-#      SecurityGroups:
+      SecurityGroups:
 #        [{ 'Fn::ImportValue': !Sub '${VpcName}-RestrictedElbSecurityGroup' }]
+        [{ 'Fn::ImportValue': !Sub '${VpcName}-ElbSecurityGroup' }]
       Subnets:
         !Split [',', { 'Fn::ImportValue': !Sub '${VpcName}-PublicSubnets'}]
       LoadBalancerAttributes:
