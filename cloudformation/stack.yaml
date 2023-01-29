@@ -19,7 +19,7 @@ Parameters:
   DesiredCount:
     Type: Number
     Description: Desired number of running tasks
-    Default: 2
+    Default: 1
 Conditions:
   NotLive: !Not
     - !Equals
@@ -48,10 +48,10 @@ Resources:
           PortMappings:
             - ContainerPort: !Ref 'ContainerPort'
           ReadonlyRootFilesystem: false
-      Cpu: 512
+      Cpu: 256
       ExecutionRoleArn: !ImportValue 'EcsExecutionRoleArn'
       Family: !Sub '${VpcName}-${Name}'
-      Memory: 1024
+      Memory: 512
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
