@@ -49,7 +49,7 @@ Resources:
             - ContainerPort: !Ref 'ContainerPort'
           ReadonlyRootFilesystem: false
       Cpu: 512
-      ExecutionRoleArn: !ImportValue 'ECSRoleArn'
+      ExecutionRoleArn: !ImportValue 'EcsExecutionRoleArn'
       Family: !Sub '${VpcName}-${Name}'
       Memory: 1024
       NetworkMode: awsvpc
@@ -59,6 +59,7 @@ Resources:
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
+      PermissionsBoundary: !ImportValue DeveloperPermissionBoundaryManagedPolicyArn
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -138,7 +139,7 @@ Resources:
           Value: true
         - Key: access_logs.s3.bucket
           Value: !ImportValue
-            Fn::Sub: ${VpcName}-LogsBucket
+            Fn::Sub: ${VpcName}-AuditLogsBucket
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn:

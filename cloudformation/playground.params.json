@@ -1,0 +1,10 @@
+{
+  "Parameters": {
+    "VpcName": "playground"
+  },
+  "Tags": {
+    "zonumi:bounded-context": "website",
+    "zonumi:product": "portfolio",
+    "zonumi:namespace": "playground"
+  }
+}
