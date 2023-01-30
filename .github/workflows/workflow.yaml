@@ -111,11 +111,11 @@ jobs:
       - run: aws s3 cp s3://zonumi-cloudformation/${{ github.event.repository.name }}/${{ needs.version.outputs.version }} ./cloudformation --recursive
 
       - run: >
-          rain deploy \
-          --yes --debug \
-          cloudformation/stack.yaml zonumi-website \
-          --config cloudformation/playground.params.json \
-          --role-arn arn:aws:iam::509744907983:role/CloudformationDeveloperRole \
+          rain deploy
+          --yes --debug
+          cloudformation/stack.yaml zonumi-website
+          --config cloudformation/playground.params.json
+          --role-arn arn:aws:iam::509744907983:role/CloudformationDeveloperRole
           --region eu-west-2
 
 #      - run: aws cloudformation deploy --template-file ./cloudformation/stack.yaml --stack-name ${{ github.event.repository.name }} --parameter-overrides VpcName=playground --capabilities CAPABILITY_IAM
