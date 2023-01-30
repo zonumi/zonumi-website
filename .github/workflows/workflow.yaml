@@ -117,8 +117,8 @@ jobs:
       - run: >
           rain deploy
           --yes --debug
-          cloudformation/test.yaml zonumi-website
-          --config cloudformation/test.params.json
+          cloudformation/stack.yaml zonumi-website
+          --config cloudformation/playground.params.json
           --role-arn arn:aws:iam::509744907983:role/CloudformationDeveloperRole
           --region eu-west-2
 
