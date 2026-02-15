@@ -35,6 +35,10 @@ type WindowState = {
   z: number;
 };
 
+const CERTIFICATIONS_WINDOW_WIDTH = 470;
+const CERTIFICATIONS_WINDOW_TOP_RATIO = 0.2;
+const WINDOW_EDGE_GUTTER = 24;
+
 const CONTACT_EMAIL = "nuno.castilho@outlook.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/nuno-castilho";
 const GITHUB_URL = "https://github.com/ncastilho";
@@ -59,6 +63,16 @@ const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
   "panel-projects": { x: 36, y: 44, z: 6 },
   "panel-contact": { x: 120, y: 72, z: 7 }
 };
+const WINDOW_IDS: WindowId[] = [
+  "about-profile",
+  "about-certs",
+  "about-project",
+  "about-skills",
+  "panel-skills",
+  "panel-projects",
+  "panel-contact"
+];
+const WINDOW_POSITION_STORAGE_KEY = "zonumi.window-positions.v1";
 
 const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
   skills: "panel-skills",
@@ -66,6 +80,49 @@ const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
   contact: "panel-contact"
 };
 const ABOUT_WINDOWS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
+
+const cloneWindows = (positions: Record<WindowId, WindowState>): Record<WindowId, WindowState> =>
+  WINDOW_IDS.reduce(
+    (accumulator, id) => {
+      accumulator[id] = { ...positions[id] };
+      return accumulator;
+    },
+    {} as Record<WindowId, WindowState>
+  );
+
+const parseStoredWindowPositions = (value: string | null): Record<WindowId, WindowState> | null => {
+  if (!value) return null;
+
+  try {
+    const parsed = JSON.parse(value) as Partial<Record<WindowId, Partial<WindowState>>>;
+    const merged = cloneWindows(INITIAL_WINDOWS);
+
+    WINDOW_IDS.forEach((id) => {
+      const state = parsed[id];
+      if (!state) return;
+
+      const x = Number(state.x);
+      const y = Number(state.y);
+      const z = Number(state.z);
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) return;
+
+      merged[id] = {
+        x,
+        y,
+        z
+      };
+    });
+
+    return merged;
+  } catch {
+    return null;
+  }
+};
+
+const getStoredWindowPositions = (): Record<WindowId, WindowState> | null => {
+  if (typeof window === "undefined") return null;
+  return parseStoredWindowPositions(localStorage.getItem(WINDOW_POSITION_STORAGE_KEY));
+};
 
 const TECHNOLOGY_CATEGORY_OVERRIDES: Record<string, string> = {
   Angular: "Frameworks",
@@ -169,14 +226,22 @@ function DesktopVerticalScroll({
 }
 
 export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
+  const [hasMounted, setHasMounted] = useState(false);
   const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(projects[0]?.slug ?? "");
   const [clockText, setClockText] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [isDesktopLayout, setIsDesktopLayout] = useState(false);
-  const [zCounter, setZCounter] = useState(20);
-  const [windowPositions, setWindowPositions] = useState(INITIAL_WINDOWS);
+  const [isDesktopLayout, setIsDesktopLayout] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(min-width: 1024px)").matches;
+  });
+  const [windowPositions, setWindowPositions] = useState(() => getStoredWindowPositions() ?? cloneWindows(INITIAL_WINDOWS));
+  const [zCounter, setZCounter] = useState(() => {
+    const storedPositions = getStoredWindowPositions();
+    if (!storedPositions) return 20;
+    return Math.max(...WINDOW_IDS.map((id) => storedPositions[id].z), 20);
+  });
   const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>({
     "about-profile": true,
     "about-certs": false,
@@ -248,6 +313,10 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
     .length;
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     const updateClock = () => {
       const now = new Date();
       setClockText(
@@ -276,6 +345,10 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
     media.addEventListener("change", updateLayout);
     return () => media.removeEventListener("change", updateLayout);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(WINDOW_POSITION_STORAGE_KEY, JSON.stringify(windowPositions));
+  }, [windowPositions]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -356,6 +429,24 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
   };
 
   const showWindow = (id: WindowId) => {
+    if (isDesktopLayout && id === "about-certs") {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const centeredX = Math.round((rect.width - CERTIFICATIONS_WINDOW_WIDTH) / 2);
+        const anchoredY = Math.round(rect.height * CERTIFICATIONS_WINDOW_TOP_RATIO);
+
+        setWindowPositions((current) => ({
+          ...current,
+          [id]: {
+            ...current[id],
+            x: Math.max(WINDOW_EDGE_GUTTER, centeredX),
+            y: Math.max(WINDOW_EDGE_GUTTER, anchoredY)
+          }
+        }));
+      }
+    }
+
     setWindowVisibility((current) => ({ ...current, [id]: true }));
     bringToFront(id);
   };
@@ -656,6 +747,10 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
           </div>,
           isDesktopLayout ? 980 : "100%"
         );
+
+  if (!hasMounted) {
+    return <main className="desktop-desktop flex h-screen flex-col overflow-hidden" />;
+  }
 
   return (
     <main className="desktop-desktop flex h-screen flex-col overflow-hidden">
