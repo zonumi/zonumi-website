@@ -678,7 +678,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     <main className={`desktop-main desktop-main-${bootPhase}`}>
       <div className="desktop-shell desktop-desktop flex h-screen flex-col overflow-hidden">
         <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 sm:px-5">
-          <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
+          <div className="flex w-full items-center gap-2 sm:gap-3">
             <Image
               src="/branding/brand/zonumi-menu-icon.png"
               alt="Zonumi"
@@ -687,6 +687,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               priority
               className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
             />
+            <p className="text-xs font-semibold leading-none sm:text-sm">{profile.company}</p>
             {(["file", "view"] as MenuKey[]).map((menu) => (
               <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
                 <button
@@ -737,9 +738,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               </div>
             ))}
 
-            <p className="desktop-menu-clock ml-auto hidden sm:block">
-              {profile.company} <span className="px-1">|</span> {clockText}
-            </p>
+            <p className="desktop-menu-clock ml-auto hidden sm:block">{clockText}</p>
           </div>
         </header>
 
