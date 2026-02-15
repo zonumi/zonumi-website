@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import type { Project, Profile } from "@/lib/markdown-utils";
 
@@ -413,6 +413,70 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isDesktopLayout]);
+
+  const clampWindowPositionsToCanvas = useCallback(() => {
+    if (!isDesktopLayout) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    setWindowPositions((current) => {
+      let changed = false;
+      const next = { ...current };
+
+      WINDOW_IDS.forEach((id) => {
+        const windowElement = canvas.querySelector<HTMLElement>(`[data-window-id="${id}"]`);
+        if (!windowElement) return;
+
+        const maxX = Math.max(0, rect.width - windowElement.offsetWidth);
+        const maxY = Math.max(0, rect.height - windowElement.offsetHeight);
+        const x = Math.min(maxX, Math.max(0, current[id].x));
+        const y = Math.min(maxY, Math.max(0, current[id].y));
+
+        if (x === current[id].x && y === current[id].y) return;
+
+        changed = true;
+        next[id] = {
+          ...current[id],
+          x,
+          y
+        };
+      });
+
+      return changed ? next : current;
+    });
+  }, [isDesktopLayout]);
+
+  useEffect(() => {
+    if (!isDesktopLayout) return;
+
+    const rafId = window.requestAnimationFrame(clampWindowPositionsToCanvas);
+    return () => window.cancelAnimationFrame(rafId);
+  }, [isDesktopLayout, activePanel, windowVisibility, clampWindowPositionsToCanvas]);
+
+  useEffect(() => {
+    if (!isDesktopLayout) return;
+
+    const handleResize = () => {
+      window.requestAnimationFrame(clampWindowPositionsToCanvas);
+    };
+
+    const canvas = canvasRef.current;
+    const observer =
+      canvas && typeof ResizeObserver !== "undefined" ? new ResizeObserver(handleResize) : null;
+
+    if (canvas && observer) {
+      observer.observe(canvas);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isDesktopLayout, clampWindowPositionsToCanvas]);
 
   const bringToFront = (id: WindowId) => {
     setActiveWindowId(id);
