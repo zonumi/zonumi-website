@@ -551,7 +551,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
               <button
                 type="button"
                 onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
-                className={`mac-menu-button px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
+                className={`px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
               >
                 {menu[0].toUpperCase() + menu.slice(1)}
               </button>

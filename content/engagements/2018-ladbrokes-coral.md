@@ -10,5 +10,5 @@ Full-stack senior developer for a cross-brand application using real-time sports
 
 - Built backend Java 8 / Spring Boot 2 / PostgreSQL microservices for automated campaigns through Salesforce Marketing Cloud.
 - Built frontend capabilities with React 15, ES6 JavaScript, and Node.js 8.
-- Worked with TDD and pair programming practices.
 - Delivered one-click deployments through Jenkins 2 CI/CD pipelines and Terraform-managed AWS infrastructure.
+- Worked in a small Agile Scrum team with PR-based code reviews and knowledge sharing with junior engineers.

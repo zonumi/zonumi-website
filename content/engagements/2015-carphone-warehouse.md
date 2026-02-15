@@ -10,5 +10,5 @@ Designer and lead developer for a backward-compatible REST/HATEOAS-compliant Mod
 
 - Built with Java 8, Spring MVC/Boot, Spring Security, Elasticsearch, Spring Data, Mule, and MongoDB.
 - Worked in BDD style with Cucumber.
-- Developed a message replay system using Angular, Spring Boot, and MongoDB.
+- Designed and built the NeCTR multi-tenant HTTP message recording and playback tool using AngularJS/Bootstrap and Java 8/Spring Boot/MongoDB.
 - Owned task estimation and backlog maintenance, and coordinated with DevOps on compliant documentation, packaging, and delivery standards.
