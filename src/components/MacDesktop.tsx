@@ -18,6 +18,10 @@ type MenuAction = {
   href?: string;
 };
 
+const CONTACT_EMAIL = "nuno.castilho@outlook.com";
+const LINKEDIN_URL = "https://www.linkedin.com/in/nuno-castilho";
+const GITHUB_URL = "https://github.com/ncastilho";
+
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   file: [
     { label: "Open About", panel: "about" },
@@ -32,17 +36,11 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   ],
   go: [
     { label: "Email Zonumi", panel: "contact" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/nuno-castilho" }
+    { label: "LinkedIn", href: LINKEDIN_URL },
+    { label: "GitHub", href: GITHUB_URL }
   ],
   help: [{ label: "How To Use", panel: "about" }]
 };
-
-const DESKTOP_ICONS: Array<{ id: Panel; label: string; glyph: string }> = [
-  { id: "about", label: "About", glyph: "▤" },
-  { id: "skills", label: "Skills", glyph: "⌘" },
-  { id: "engagements", label: "Engagements", glyph: "▣" },
-  { id: "contact", label: "Contact", glyph: "✉" }
-];
 
 export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   const [activePanel, setActivePanel] = useState<Panel>("about");
@@ -55,6 +53,19 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     () => engagements.find((engagement) => engagement.slug === selectedSlug) ?? engagements[0],
     [engagements, selectedSlug]
   );
+  const [aboutSummaryContent, certificationsContent] = useMemo(() => {
+    const sectionHeadingPattern = /^##\s+Certifications and Education\s*$/im;
+    const match = profile.content.match(sectionHeadingPattern);
+
+    if (!match || match.index === undefined) {
+      return [profile.content.trim(), ""];
+    }
+
+    const heading = match[0];
+    const summary = profile.content.slice(0, match.index).trim();
+    const certifications = profile.content.slice(match.index + heading.length).trim();
+    return [summary, certifications];
+  }, [profile.content]);
 
   useEffect(() => {
     const updateClock = () => {
@@ -85,11 +96,11 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("nuno@zonumi.com");
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
       setCopiedEmail(true);
       window.setTimeout(() => setCopiedEmail(false), 1500);
     } catch {
-      window.location.href = "mailto:nuno@zonumi.com";
+      window.location.href = `mailto:${CONTACT_EMAIL}`;
     }
   };
 
@@ -101,6 +112,68 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         : activePanel === "engagements"
           ? "Project Finder"
           : "Contact Console";
+
+  const renderProjectFinder = () => (
+    <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
+      <nav className="mac-scroll max-h-[380px] overflow-y-auto border-2 border-black bg-[#f7f7f7] p-1">
+        {engagements.map((engagement) => (
+          <button
+            key={engagement.slug}
+            type="button"
+            onClick={() => setSelectedSlug(engagement.slug)}
+            className={`block w-full border border-transparent px-2 py-1 text-left text-xs ${
+              selectedEngagement?.slug === engagement.slug ? "bg-black text-white" : "hover:border-black"
+            }`}
+          >
+            <span className="block font-semibold">{engagement.client}</span>
+            <span className="block text-[11px]">{engagement.period}</span>
+          </button>
+        ))}
+      </nav>
+
+      <article className="space-y-3 border-2 border-black bg-[#f7f7f7] p-3">
+        {selectedEngagement ? (
+          <>
+            <div>
+              <h3 className="text-base">{selectedEngagement.client}</h3>
+              <p className="text-xs">{selectedEngagement.role}</p>
+              <p className="text-xs">{selectedEngagement.period}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {selectedEngagement.technologies.map((tech) => (
+                <span key={tech} className="border border-black bg-white px-2 py-0.5 text-[11px]">
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <div className="prose prose-sm max-w-none prose-p:my-2 prose-li:my-0.5">
+              <Markdown>{selectedEngagement.content}</Markdown>
+            </div>
+          </>
+        ) : (
+          <p className="text-sm">No engagements available.</p>
+        )}
+      </article>
+    </div>
+  );
+  const renderSkills = () => (
+    <div className="space-y-3">
+      {Object.entries(profile.skills).map(([group, skills]) => (
+        <article key={group} className="border-2 border-black bg-[#f1f1f1] p-2">
+          <h3 className="mb-2 text-xs uppercase">{group}</h3>
+          <ul className="flex flex-wrap gap-2">
+            {skills.map((skill) => (
+              <li key={`${group}-${skill}`} className="border border-black bg-white px-2 py-1 text-xs">
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  );
 
   return (
     <main className="mac-desktop min-h-screen">
@@ -149,139 +222,103 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         </div>
       </header>
 
-      <section className="mx-auto grid w-full max-w-7xl gap-4 px-3 py-4 sm:px-5 md:grid-cols-[104px_1fr] md:py-6">
-        <aside className="desktop-icons flex gap-3 md:flex-col md:gap-4">
-          {DESKTOP_ICONS.map((icon) => (
-            <button
-              key={icon.id}
-              type="button"
-              onClick={() => openPanel(icon.id)}
-              className={`desktop-icon group ${activePanel === icon.id ? "selected" : ""}`}
-            >
-              <span className="desktop-icon-glyph">{icon.glyph}</span>
-              <span className="desktop-icon-label">{icon.label}</span>
-            </button>
-          ))}
-        </aside>
-
+      <section className="mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6">
         <div className="space-y-4">
-          <section className="mac-window">
-            <div className="mac-titlebar">
-              <span className="mac-dot" />
-              <h1>{panelTitle}</h1>
-              <span className="mac-dot" />
-            </div>
-            <div className="mac-window-content">
-              {activePanel === "about" ? (
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide">{profile.company}</p>
-                    <h2 className="mt-1 text-lg">{profile.name}</h2>
+          {activePanel === "about" ? (
+            <>
+              <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr]">
+                <section className="mac-window">
+                  <div className="mac-titlebar">
+                    <span className="mac-dot" />
+                    <h1>System Profile</h1>
+                    <span className="mac-dot" />
                   </div>
-                  <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                    <Markdown>{profile.content}</Markdown>
+                  <div className="mac-window-content space-y-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide">{profile.company}</p>
+                      <h2 className="mt-1 text-lg">{profile.name}</h2>
+                    </div>
+                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+                      <Markdown>{aboutSummaryContent}</Markdown>
+                    </div>
                   </div>
-                </div>
-              ) : null}
+                </section>
 
-              {activePanel === "skills" ? (
-                <div className="space-y-3">
-                  {Object.entries(profile.skills).map(([group, skills]) => (
-                    <article key={group} className="border-2 border-black bg-[#f1f1f1] p-2">
-                      <h3 className="mb-2 text-xs uppercase">{group}</h3>
-                      <ul className="flex flex-wrap gap-2">
-                        {skills.map((skill) => (
-                          <li key={`${group}-${skill}`} className="border border-black bg-white px-2 py-1 text-xs">
-                            {skill}
-                          </li>
-                        ))}
-                      </ul>
-                    </article>
-                  ))}
-                </div>
-              ) : null}
+                <div className="space-y-4 xl:self-start">
+                  <section className="mac-window">
+                    <div className="mac-titlebar">
+                      <span className="mac-dot" />
+                      <h2>Certifications & Education</h2>
+                      <span className="mac-dot" />
+                    </div>
+                    <div className="mac-window-content">
+                      {certificationsContent ? (
+                        <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+                          <Markdown>{certificationsContent}</Markdown>
+                        </div>
+                      ) : (
+                        <p className="text-sm">No certifications section found in profile content.</p>
+                      )}
+                    </div>
+                  </section>
 
-              {activePanel === "engagements" ? (
-                <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
-                  <nav className="mac-scroll max-h-[380px] overflow-y-auto border-2 border-black bg-[#f7f7f7] p-1">
-                    {engagements.map((engagement) => (
-                      <button
-                        key={engagement.slug}
-                        type="button"
-                        onClick={() => setSelectedSlug(engagement.slug)}
-                        className={`block w-full border border-transparent px-2 py-1 text-left text-xs ${
-                          selectedEngagement?.slug === engagement.slug ? "bg-black text-white" : "hover:border-black"
-                        }`}
-                      >
-                        <span className="block font-semibold">{engagement.client}</span>
-                        <span className="block text-[11px]">{engagement.period}</span>
+                  <section className="mac-window">
+                    <div className="mac-titlebar">
+                      <span className="mac-dot" />
+                      <h2>Skills Desk Accessory</h2>
+                      <span className="mac-dot" />
+                    </div>
+                    <div className="mac-window-content">{renderSkills()}</div>
+                  </section>
+                </div>
+              </div>
+
+              <section className="mac-window">
+                <div className="mac-titlebar">
+                  <span className="mac-dot" />
+                  <h2>Project Finder</h2>
+                  <span className="mac-dot" />
+                </div>
+                <div className="mac-window-content">{renderProjectFinder()}</div>
+              </section>
+            </>
+          ) : (
+            <section className="mac-window">
+              <div className="mac-titlebar">
+                <span className="mac-dot" />
+                <h1>{panelTitle}</h1>
+                <span className="mac-dot" />
+              </div>
+              <div className="mac-window-content">
+                {activePanel === "skills" ? renderSkills() : null}
+
+                {activePanel === "engagements" ? renderProjectFinder() : null}
+
+                {activePanel === "contact" ? (
+                  <div className="space-y-4 text-sm">
+                    <p>Use menu commands or quick actions below to contact Zonumi.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" onClick={handleCopyEmail} className="mac-action">
+                        {copiedEmail ? "Email Copied" : "Copy Email"}
                       </button>
-                    ))}
-                  </nav>
-
-                  <article className="space-y-3 border-2 border-black bg-[#f7f7f7] p-3">
-                    {selectedEngagement ? (
-                      <>
-                        <div>
-                          <h3 className="text-base">{selectedEngagement.client}</h3>
-                          <p className="text-xs">{selectedEngagement.role}</p>
-                          <p className="text-xs">{selectedEngagement.period}</p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5">
-                          {selectedEngagement.technologies.map((tech) => (
-                            <span key={tech} className="border border-black bg-white px-2 py-0.5 text-[11px]">
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="prose prose-sm max-w-none prose-p:my-2 prose-li:my-0.5">
-                          <Markdown>{selectedEngagement.content}</Markdown>
-                        </div>
-                      </>
-                    ) : (
-                      <p className="text-sm">No engagements available.</p>
-                    )}
-                  </article>
-                </div>
-              ) : null}
-
-              {activePanel === "contact" ? (
-                <div className="space-y-4 text-sm">
-                  <p>Use menu commands or quick actions below to contact Zonumi.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={handleCopyEmail} className="mac-action">
-                      {copiedEmail ? "Email Copied" : "Copy Email"}
-                    </button>
-                    <a className="mac-action" href="mailto:nuno@zonumi.com">
-                      Send Email
-                    </a>
-                    <a className="mac-action" href="https://www.linkedin.com/in/nuno-castilho" target="_blank" rel="noreferrer">
-                      Open LinkedIn
-                    </a>
+                      <a className="mac-action" href={`mailto:${CONTACT_EMAIL}`}>
+                        Send Email
+                      </a>
+                      <a className="mac-action" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
+                        Open LinkedIn
+                      </a>
+                      <a className="mac-action" href={GITHUB_URL} target="_blank" rel="noreferrer">
+                        Open GitHub
+                      </a>
+                    </div>
+                    <p className="text-xs">
+                      Direct contact: <strong>{CONTACT_EMAIL}</strong>
+                    </p>
                   </div>
-                  <p className="text-xs">
-                    Direct contact: <strong>nuno@zonumi.com</strong>
-                  </p>
-                </div>
-              ) : null}
-            </div>
-          </section>
-
-          <section className="mac-window hidden md:block">
-            <div className="mac-titlebar">
-              <span className="mac-dot" />
-              <h2>Desktop Notes</h2>
-              <span className="mac-dot" />
-            </div>
-            <div className="mac-window-content text-xs leading-relaxed">
-              <p>
-                This interface recreates a classic monochrome Macintosh desktop: top menu bar, icon launchers, stacked windows, high-contrast controls, and
-                single-click command navigation.
-              </p>
-            </div>
-          </section>
+                ) : null}
+              </div>
+            </section>
+          )}
         </div>
       </section>
     </main>
