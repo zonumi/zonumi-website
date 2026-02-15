@@ -24,6 +24,7 @@ type MenuAction = {
   label: string;
   panel?: Panel;
   href?: string;
+  windowId?: WindowId;
 };
 
 type WindowState = {
@@ -38,19 +39,20 @@ const GITHUB_URL = "https://github.com/ncastilho";
 
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   file: [
-    { label: "Open About", panel: "about" },
-    { label: "Open Skills", panel: "skills" },
-    { label: "Open Engagements", panel: "engagements" },
-    { label: "Open Contact", panel: "contact" }
+    { label: "Open About Desktop", panel: "about" },
+    { label: "Open Skills Window", panel: "skills" },
+    { label: "Open Engagement Window", panel: "engagements" },
+    { label: "Open Contact Window", panel: "contact" }
   ],
   edit: [
     { label: "Profile Summary", panel: "about" },
     { label: "Contact Actions", panel: "contact" }
   ],
   view: [
-    { label: "Project Finder", panel: "engagements" },
-    { label: "Skills Desk Accessory", panel: "skills" },
-    { label: "System Profile", panel: "about" }
+    { label: "System Profile", panel: "about", windowId: "about-profile" },
+    { label: "Certifications", panel: "about", windowId: "about-certs" },
+    { label: "Project Finder", panel: "about", windowId: "about-project" },
+    { label: "Skills Desk Accessory", panel: "about", windowId: "about-skills" }
   ],
   special: [
     { label: "Email Nuno", panel: "contact" },
@@ -74,6 +76,36 @@ const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
   engagements: "panel-engagements",
   contact: "panel-contact"
 };
+const ABOUT_WINDOWS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
+
+function MacVerticalScroll({
+  className,
+  contentClassName,
+  children
+}: {
+  className?: string;
+  contentClassName?: string;
+  children: ReactNode;
+}) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollByAmount = (delta: number) => {
+    scrollRef.current?.scrollBy({ top: delta, behavior: "smooth" });
+  };
+
+  return (
+    <div className={`mac-vscroll ${className ?? ""}`}>
+      <div ref={scrollRef} className={`mac-vscroll-content ${contentClassName ?? ""}`}>
+        {children}
+      </div>
+      <div className="mac-vscroll-rail">
+        <button type="button" className="mac-vscroll-arrow mac-vscroll-arrow-up" aria-label="Scroll up" onClick={() => scrollByAmount(-96)} />
+        <div className="mac-vscroll-track" />
+        <button type="button" className="mac-vscroll-arrow mac-vscroll-arrow-down" aria-label="Scroll down" onClick={() => scrollByAmount(96)} />
+      </div>
+    </div>
+  );
+}
 
 export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   const [activePanel, setActivePanel] = useState<Panel>("about");
@@ -84,6 +116,16 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   const [isDesktopLayout, setIsDesktopLayout] = useState(false);
   const [zCounter, setZCounter] = useState(20);
   const [windowPositions, setWindowPositions] = useState(INITIAL_WINDOWS);
+  const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>({
+    "about-profile": true,
+    "about-certs": true,
+    "about-project": true,
+    "about-skills": true,
+    "panel-skills": true,
+    "panel-engagements": true,
+    "panel-contact": true
+  });
+  const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-skills");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
@@ -183,6 +225,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   }, [isDesktopLayout]);
 
   const bringToFront = (id: WindowId) => {
+    setActiveWindowId(id);
     setZCounter((prev) => {
       const next = prev + 1;
       setWindowPositions((current) => ({
@@ -194,6 +237,16 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       }));
       return next;
     });
+  };
+
+  const showWindow = (id: WindowId) => {
+    setWindowVisibility((current) => ({ ...current, [id]: true }));
+    bringToFront(id);
+  };
+
+  const closeWindow = (id: WindowId) => {
+    setWindowVisibility((current) => ({ ...current, [id]: false }));
+    setActiveWindowId((current) => (current === id ? "about-profile" : current));
   };
 
   const beginDrag = (id: WindowId, event: React.MouseEvent<HTMLDivElement>) => {
@@ -220,9 +273,20 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     setActivePanel(panel);
     setActiveMenu(null);
 
-    if (panel !== "about") {
-      bringToFront(PANEL_WINDOW_MAP[panel]);
+    if (panel === "about") {
+      setWindowVisibility((current) => {
+        const next = { ...current };
+        ABOUT_WINDOWS.forEach((id) => {
+          next[id] = true;
+        });
+        return next;
+      });
+      bringToFront("about-profile");
+      return;
     }
+
+    const panelWindow = PANEL_WINDOW_MAP[panel];
+    showWindow(panelWindow);
   };
 
   const handleCopyEmail = async () => {
@@ -264,29 +328,34 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     width: number | string,
     extraClass = ""
   ) => (
+    windowVisibility[id] ? (
     <section
-      className={`mac-window ${isDesktopLayout ? "absolute" : ""} ${extraClass}`}
+      className={`mac-window ${activeWindowId === id ? "mac-window-active" : "mac-window-inactive"} ${isDesktopLayout ? "absolute" : ""} ${extraClass}`}
       style={getWindowStyle(id, width)}
       onMouseDown={() => (isDesktopLayout ? bringToFront(id) : null)}
       data-window-id={id}
     >
       <div className="mac-titlebar mac-drag-handle" onMouseDown={(event) => beginDrag(id, event)}>
-        <span className="mac-dot" />
+        <button
+          type="button"
+          className="mac-close-box"
+          aria-label={`Close ${title}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            closeWindow(id);
+          }}
+        />
         <h2>{title}</h2>
-        <span className="mac-dot" />
       </div>
       <div className="mac-subbar">{subbar}</div>
       {content}
     </section>
+    ) : null
   );
 
   const renderProjectFinder = (constrainedHeight = false) => (
-    <div className={`grid gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
-      <nav
-        className={`mac-scroll border-2 border-black bg-[#f7f7f7] p-1 ${
-          constrainedHeight ? "h-full overflow-y-scroll" : "max-h-[380px] overflow-y-auto"
-        }`}
-      >
+    <div className={`grid min-h-0 gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
+      <MacVerticalScroll className={`min-h-0 border-2 border-black bg-[#f7f7f7] ${constrainedHeight ? "h-full" : "max-h-[380px]"}`} contentClassName="p-1">
         {engagements.map((engagement) => (
           <button
             key={engagement.slug}
@@ -300,9 +369,9 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
             <span className="block text-[11px]">{engagement.period}</span>
           </button>
         ))}
-      </nav>
+      </MacVerticalScroll>
 
-      <article className={`space-y-3 border-2 border-black bg-[#f7f7f7] p-3 ${constrainedHeight ? "h-full overflow-y-scroll" : ""}`}>
+      <MacVerticalScroll className={`min-h-0 border-2 border-black bg-[#f7f7f7] ${constrainedHeight ? "h-full" : "max-h-[380px]"}`} contentClassName="space-y-3 p-3">
         {selectedEngagement ? (
           <>
             <div>
@@ -326,7 +395,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         ) : (
           <p className="text-sm">No engagements available.</p>
         )}
-      </article>
+      </MacVerticalScroll>
     </div>
   );
 
@@ -396,7 +465,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
           <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
           <p>{selectedEngagement?.period ?? "No period"}</p>
         </>,
-        <div className="mac-window-content h-[320px] xl:h-[460px]">{renderProjectFinder(true)}</div>,
+        <div className="mac-window-content h-[320px] overflow-hidden xl:h-[460px]">{renderProjectFinder(true)}</div>,
         860
       )}
 
@@ -408,7 +477,11 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
           <p>{totalSkills} listed skills</p>
           <p>Cloud + Delivery</p>
         </>,
-        <div className="mac-scroll mac-window-content h-[320px] overflow-y-scroll xl:h-[460px]">{renderSkills()}</div>,
+        <div className="mac-window-content h-[320px] overflow-hidden p-0 xl:h-[460px]">
+          <MacVerticalScroll className="h-full min-h-0" contentClassName="p-3">
+            {renderSkills()}
+          </MacVerticalScroll>
+        </div>,
         470
       )}
     </>
@@ -489,6 +562,13 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                       key={action.label}
                       type="button"
                       onClick={() => {
+                        if (action.windowId) {
+                          setActivePanel("about");
+                          showWindow(action.windowId);
+                          setActiveMenu(null);
+                          return;
+                        }
+
                         if (action.panel) {
                           openPanel(action.panel);
                           return;
@@ -515,7 +595,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         </div>
       </header>
 
-      <section className="mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6">
+      <section className={`${isDesktopLayout ? "w-full px-0 py-4 md:py-6" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
         <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-[980px]" : "space-y-4"}`}>
           {activePanel === "about" ? aboutWindows : singlePanelWindow}
         </div>
