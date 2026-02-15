@@ -4,9 +4,9 @@
 This repository is a Next.js 15 + TypeScript site for Zonumi.
 
 - `src/app/`: App Router entrypoints (`layout.tsx`, `page.tsx`, global styles, loading UI).
-- `src/components/`: Reusable UI components (PascalCase files, e.g., `EngagementTimeline.tsx`).
+- `src/components/`: Reusable UI components (PascalCase files, e.g., `ProjectTimeline.tsx`).
 - `src/lib/`: Data/loading helpers (for example `markdown-utils.ts` reads markdown content).
-- `content/`: Source content in markdown (`profile.md` and `content/engagements/*.md`).
+- `content/`: Source content in markdown (`profile.md` and `content/projects/*.md`).
 - `public/`: Static assets, including client logos under `public/branding/clients/`.
 - `artifacts/`: Visual snapshots/reference images used during design iterations.
 
@@ -24,7 +24,7 @@ Typical local validation before PR:
 ## Coding Style & Naming Conventions
 - Language: TypeScript (`strict` mode enabled in `tsconfig.json`).
 - Indentation: 2 spaces; prefer double quotes and semicolons to match existing code.
-- Components/types: `PascalCase` (e.g., `ContactActions`, `Engagement`).
+- Components/types: `PascalCase` (e.g., `ContactActions`, `Project`).
 - Variables/functions: `camelCase`; constants: `UPPER_SNAKE_CASE` for true constants.
 - File naming: components in `PascalCase.tsx`; utility modules in `kebab-case.ts` where already used.
 - Imports: use `@/*` alias for `src/*` paths when practical.

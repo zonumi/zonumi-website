@@ -18,7 +18,7 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Zonumi Limited | Expert Software Engineering & Cloud-Native Consultancy",
   description:
-    "Digital HQ and technical portfolio for Nuno Castilho. Senior software engineering, cloud-native delivery, and consultancy engagements.",
+    "Digital HQ and technical portfolio for Nuno Castilho. Senior software engineering, cloud-native delivery, and consultancy projects.",
   metadataBase: new URL("https://zonumi.com")
 };
 

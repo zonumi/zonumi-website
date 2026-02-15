@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
-export type Engagement = {
+export type Project = {
   slug: string;
   client: string;
   role: string;
@@ -21,7 +21,7 @@ export type Profile = {
 };
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
-const ENGAGEMENTS_DIR = path.join(CONTENT_ROOT, "engagements");
+const PROJECTS_DIR = path.join(CONTENT_ROOT, "projects");
 const PROFILE_FILE = path.join(CONTENT_ROOT, "profile.md");
 
 function readMarkdownFile(filePath: string) {
@@ -29,14 +29,14 @@ function readMarkdownFile(filePath: string) {
   return matter(raw);
 }
 
-export function getAllEngagements(): Engagement[] {
+export function getAllProjects(): Project[] {
   const files = fs
-    .readdirSync(ENGAGEMENTS_DIR)
+    .readdirSync(PROJECTS_DIR)
     .filter((file) => file.endsWith(".md"));
 
   return files
     .map((fileName) => {
-      const filePath = path.join(ENGAGEMENTS_DIR, fileName);
+      const filePath = path.join(PROJECTS_DIR, fileName);
       const { data, content } = readMarkdownFile(filePath);
 
       return {
@@ -66,11 +66,11 @@ export function getProfile(): Profile {
   };
 }
 
-export function getTechnologies(engagements: Engagement[]): string[] {
+export function getTechnologies(projects: Project[]): string[] {
   const uniqueTech = new Set<string>();
 
-  engagements.forEach((engagement) => {
-    engagement.technologies.forEach((tech) => uniqueTech.add(tech));
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => uniqueTech.add(tech));
   });
 
   return Array.from(uniqueTech).sort((a, b) => a.localeCompare(b));
