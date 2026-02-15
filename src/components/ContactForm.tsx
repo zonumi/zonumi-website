@@ -1,11 +1,70 @@
 "use client";
 
 import { ValidationError, useForm } from "@formspree/react";
+import { type FormEvent, useEffect, useState } from "react";
 
-const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID ?? "<your-formspree-form-id>";
+const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
+const MIN_FILL_TIME_MS = 3000;
+const SUBMIT_COOLDOWN_MS = 30000;
+const CONTACT_COOLDOWN_STORAGE_KEY = "zonumi.contact.cooldown.until";
 
 export function ContactForm() {
-  const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID);
+  const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID ?? "");
+  const [startedAt] = useState(() => Date.now());
+  const [cooldownUntil, setCooldownUntil] = useState(0);
+  const [clientError, setClientError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(CONTACT_COOLDOWN_STORAGE_KEY);
+    if (!stored) return;
+    const parsed = Number(stored);
+    if (Number.isFinite(parsed)) {
+      setCooldownUntil(parsed);
+    }
+  }, []);
+
+  if (!FORMSPREE_FORM_ID) {
+    return (
+      <p className="border border-black bg-white px-3 py-2 text-xs" role="alert">
+        Contact form is unavailable. Missing NEXT_PUBLIC_FORMSPREE_FORM_ID.
+      </p>
+    );
+  }
+
+  const handleSafeSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setClientError(null);
+
+    const now = Date.now();
+    if (now < cooldownUntil) {
+      const secondsRemaining = Math.ceil((cooldownUntil - now) / 1000);
+      setClientError(`Please wait ${secondsRemaining}s before sending another message.`);
+      return;
+    }
+
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const honeypotValue = String(formData.get("_gotcha") ?? "").trim();
+    if (honeypotValue) {
+      setClientError("Unable to submit this message.");
+      return;
+    }
+
+    if (now - startedAt < MIN_FILL_TIME_MS) {
+      setClientError("Please take a moment to complete the form before submitting.");
+      return;
+    }
+
+    const nextCooldown = now + SUBMIT_COOLDOWN_MS;
+    setCooldownUntil(nextCooldown);
+    window.localStorage.setItem(CONTACT_COOLDOWN_STORAGE_KEY, String(nextCooldown));
+    await handleSubmit(event);
+  };
 
   if (state.succeeded) {
     return (
@@ -16,7 +75,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSafeSubmit} className="space-y-2">
       <div className="space-y-1">
         <label htmlFor="contact-name" className="block text-[11px] font-semibold uppercase">
           Name
@@ -26,6 +85,8 @@ export function ContactForm() {
           type="text"
           name="name"
           required
+          minLength={2}
+          maxLength={80}
           className="w-full border border-black bg-white px-2 py-1 text-xs"
           data-testid="contact-name"
         />
@@ -40,6 +101,7 @@ export function ContactForm() {
           type="email"
           name="email"
           required
+          maxLength={120}
           className="w-full border border-black bg-white px-2 py-1 text-xs"
           data-testid="contact-email"
         />
@@ -54,6 +116,8 @@ export function ContactForm() {
           id="contact-message"
           name="message"
           required
+          minLength={20}
+          maxLength={2000}
           rows={6}
           className="w-full resize-y border border-black bg-white px-2 py-1 text-xs"
           data-testid="contact-message"
@@ -61,7 +125,16 @@ export function ContactForm() {
         <ValidationError prefix="Message" field="message" errors={state.errors} className="text-[11px]" />
       </div>
 
-      <input type="text" name="_gotcha" className="hidden" tabIndex={-1} autoComplete="off" />
+      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="contact-company">Company</label>
+        <input id="contact-company" type="text" name="_gotcha" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      {clientError ? (
+        <p className="border border-black bg-white px-2 py-1 text-[11px]" role="alert" data-testid="contact-error">
+          {clientError}
+        </p>
+      ) : null}
 
       <button
         type="submit"
