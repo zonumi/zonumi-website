@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgba(127, 155, 193, 0.24);
+}
+
+body {
+  font-family: var(--font-plex-sans), sans-serif;
+  background: radial-gradient(circle at 12% 8%, rgba(32, 204, 164, 0.16), transparent 30%),
+    radial-gradient(circle at 88% 4%, rgba(93, 165, 255, 0.16), transparent 26%),
+    linear-gradient(165deg, #050a14 0%, #0b1424 58%, #0e1a2b 100%);
+  color: #e7edf6;
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(73, 244, 200, 0.28);
+  color: #f8fbff;
+}
+
+.terminal-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 3px 3px;
+  opacity: 0.07;
+}
+
+.soft-reveal {
+  animation: soft-reveal 0.55s ease-out both;
+}
+
+@keyframes soft-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 11mm;
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-card {
+    border: 1px solid #222 !important;
+    break-inside: avoid;
+    margin-bottom: 9px;
+    opacity: 1 !important;
+    background: transparent !important;
+  }
+
+  .print-break-before {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .print-letterhead {
+    padding-bottom: 8px !important;
+    margin-bottom: 2px;
+  }
+}
