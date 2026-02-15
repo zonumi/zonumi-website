@@ -595,11 +595,11 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
       {renderWindowFrame(
         "about-certs",
-        "Certifications & Education",
+        "Education",
         <>
           <p>{certificationsCount} records</p>
           <p>2006-2018</p>
-          <p>accreditations</p>
+          <p>certifications</p>
         </>,
         <div className="desktop-window-content">
           {certificationsContent ? (

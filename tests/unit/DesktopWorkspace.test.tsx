@@ -86,14 +86,9 @@ describe("DesktopWorkspace", () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     renderReadyWorkspace();
 
-    expect(screen.queryByTestId("window-about-certs")).not.toBeInTheDocument();
-
-    await user.click(screen.getByTestId("menu-trigger-view"));
-    await user.click(screen.getByTestId("menu-action-certifications"));
-
     expect(screen.getByTestId("window-about-certs")).toBeInTheDocument();
 
-    await user.click(screen.getByLabelText("Close Certifications & Education"));
+    await user.click(screen.getByLabelText("Close Education"));
     expect(screen.queryByTestId("window-about-certs")).not.toBeInTheDocument();
 
     await user.click(screen.getByTestId("menu-trigger-view"));

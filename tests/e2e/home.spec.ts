@@ -15,7 +15,7 @@ test.describe("Zonumi desktop workspace", () => {
   test("closes and reopens Certifications window via View menu", async ({ page }) => {
     await expect(page.getByTestId("window-about-certs")).toBeVisible();
 
-    await page.getByLabel("Close Certifications & Education").click();
+    await page.getByLabel("Close Education").click();
     await expect(page.getByTestId("window-about-certs")).toHaveCount(0);
 
     await clickMenuAction(page, "view", "menu-action-certifications");
