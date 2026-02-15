@@ -607,10 +607,10 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
   );
 
   const renderSkills = () => (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {mergedSkills.map(({ group, skills }) => (
-        <article key={group} className="border-2 border-black bg-[#f1f1f1] p-2">
-          <h3 className="mb-2 text-xs uppercase">{group}</h3>
+        <article key={group} className="space-y-2">
+          <h3 className="text-xs uppercase">{group}</h3>
           <ul className="flex flex-wrap gap-2">
             {skills.map((skill) => (
               <li key={`${group}-${skill}`} className="border border-black bg-white px-2 py-1 text-xs">
