@@ -127,78 +127,6 @@ const getStoredWindowPositions = (): Record<WindowId, WindowState> | null => {
   return parseStoredWindowPositions(localStorage.getItem(WINDOW_POSITION_STORAGE_KEY));
 };
 
-const TECHNOLOGY_CATEGORY_OVERRIDES: Record<string, string> = {
-  Angular: "Frameworks",
-  Bootstrap: "Frameworks",
-  Hibernate: "Frameworks",
-  "Java EE": "Frameworks",
-  JPA: "Frameworks",
-  jQuery: "Frameworks",
-  JSF: "Frameworks",
-  Redux: "Frameworks",
-  Spring: "Frameworks",
-  "Spring Cloud Gateway": "Frameworks",
-  "Spring MVC": "Frameworks",
-  "Spring Security": "Frameworks",
-  "Spring Webflow": "Frameworks",
-  WebFlux: "Frameworks",
-  EKS: "Infrastructure",
-  Fargate: "Infrastructure",
-  S3: "Infrastructure",
-  Elasticsearch: "Databases",
-  Flyway: "Databases",
-  RDS: "Databases",
-  SQS: "Messaging",
-  Mule: "APIs & Integration",
-  ClearCase: "CI/CD",
-  Octopus: "CI/CD",
-  "OpenTelemetry": "Practices",
-  "X-Ray": "Practices",
-  Cucumber: "Practices",
-  Apigee: "APIs & Integration",
-  "IBM AS/400": "APIs & Integration",
-  JSR286: "APIs & Integration",
-  Salesforce: "APIs & Integration",
-  WSRP: "APIs & Integration",
-  JWT: "Security & Identity",
-  OAuth2: "Security & Identity",
-  SAML2: "Security & Identity",
-  JBoss: "Platforms & Middleware",
-  Jetty: "Platforms & Middleware",
-  OSGi: "Platforms & Middleware",
-  Tomcat: "Platforms & Middleware",
-  WebCenter: "Platforms & Middleware",
-  "WebSphere Commerce": "Platforms & Middleware",
-  Eclipse: "Developer Tooling",
-  Jira: "Developer Tooling",
-  JMeter: "Developer Tooling",
-  ASP: "Web & Markup",
-  CSS: "Web & Markup",
-  HTML: "Web & Markup",
-  VBScript: "Web & Markup",
-  "Active Directory": "Operating Systems & Networking",
-  DHCP: "Operating Systems & Networking",
-  DNS: "Operating Systems & Networking",
-  "Exchange 2000": "Operating Systems & Networking",
-  IIS5: "Operating Systems & Networking",
-  "ISA 2000/2004": "Operating Systems & Networking",
-  POP3: "Operating Systems & Networking",
-  SMTP: "Operating Systems & Networking",
-  VPN: "Operating Systems & Networking",
-  Windows: "Operating Systems & Networking",
-  "Windows 2000": "Operating Systems & Networking",
-  "Windows NT": "Operating Systems & Networking",
-  "Windows NT4": "Operating Systems & Networking",
-  WINS: "Operating Systems & Networking",
-  "Desktop Installation": "Operations & Support",
-  "Desktop Rollout": "Operations & Support",
-  "Network Administration": "Operations & Support",
-  "Shell Scripting": "Operations & Support",
-  "Small Office Networks": "Operations & Support",
-  "Technical Support": "Operations & Support",
-  "Visual Basic": "Languages"
-};
-
 function DesktopVerticalScroll({
   className,
   contentClassName,
@@ -280,36 +208,14 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   }, [profile.content]);
 
   const yearsExperience = 17;
-  const mergedSkills = useMemo(() => {
-    const grouped = new Map<string, Set<string>>();
-
-    Object.entries(skills).forEach(([group, groupSkills]) => {
-      grouped.set(group, new Set(groupSkills));
-    });
-
-    const knownSkills = new Set(Array.from(grouped.values()).flatMap((skills) => Array.from(skills)));
-
-    projects.forEach((project) => {
-      project.technologies.forEach((technology) => {
-        if (knownSkills.has(technology)) {
-          return;
-        }
-
-        const targetGroup = TECHNOLOGY_CATEGORY_OVERRIDES[technology] ?? "Additional Technologies";
-        if (!grouped.has(targetGroup)) {
-          grouped.set(targetGroup, new Set());
-        }
-
-        grouped.get(targetGroup)?.add(technology);
-        knownSkills.add(technology);
-      });
-    });
-
-    return Array.from(grouped.entries()).map(([group, skills]) => ({
-      group,
-      skills: Array.from(skills).sort((a, b) => a.localeCompare(b))
-    }));
-  }, [projects, skills]);
+  const mergedSkills = useMemo(
+    () =>
+      Object.entries(skills).map(([group, groupSkills]) => ({
+        group,
+        skills: groupSkills
+      })),
+    [skills]
+  );
   const skillGroups = mergedSkills.length;
   const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
   const certificationsCount = certificationsContent
