@@ -40,6 +40,7 @@ type WindowState = {
 const CERTIFICATIONS_WINDOW_WIDTH = 470;
 const CERTIFICATIONS_WINDOW_TOP_RATIO = 0.2;
 const WINDOW_EDGE_GUTTER = 24;
+const BOOT_PROGRESS_STEPS = 14;
 
 const CONTACT_EMAIL = "nuno.castilho@outlook.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/nuno-castilho";
@@ -230,6 +231,7 @@ function DesktopVerticalScroll({
 export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspaceProps) {
   const [hasMounted, setHasMounted] = useState(false);
   const [bootPhase, setBootPhase] = useState<BootPhase>("booting");
+  const [bootProgress, setBootProgress] = useState(0);
   const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(projects[0]?.slug ?? "");
@@ -337,6 +339,30 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     return () => {
       window.clearTimeout(startTransitionTimer);
       window.clearTimeout(completeBootTimer);
+    };
+  }, [hasMounted]);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const bootDuration = prefersReducedMotion ? 450 : 2400;
+    const stepDuration = Math.max(45, Math.floor(bootDuration / BOOT_PROGRESS_STEPS));
+    setBootProgress(0);
+
+    const interval = window.setInterval(() => {
+      setBootProgress((current) => {
+        if (current >= BOOT_PROGRESS_STEPS) {
+          window.clearInterval(interval);
+          return BOOT_PROGRESS_STEPS;
+        }
+
+        return current + 1;
+      });
+    }, stepDuration);
+
+    return () => {
+      window.clearInterval(interval);
     };
   }, [hasMounted]);
 
@@ -850,7 +876,11 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
           />
         </div>
         <p className="boot-zonumi-title">Welcome to Zonumi</p>
-        <div className="boot-progress" />
+        <div className="boot-progress" aria-hidden="true">
+          {Array.from({ length: BOOT_PROGRESS_STEPS }, (_, index) => (
+            <span key={`boot-cell-${index}`} className={`boot-progress-cell ${index < bootProgress ? "boot-progress-cell-filled" : ""}`} />
+          ))}
+        </div>
       </div>
     </div>
   ) : null;

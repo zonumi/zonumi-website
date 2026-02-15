@@ -125,27 +125,41 @@ body {
 }
 
 .boot-progress {
-  width: min(260px, 70vw);
+  --boot-cell-count: 14;
+  --boot-cell-width: 16px;
+  --boot-padding: 1px;
+  --boot-border: 2px;
+  display: grid;
+  grid-template-columns: repeat(var(--boot-cell-count), var(--boot-cell-width));
+  column-gap: 0;
+  align-items: center;
+  width: calc(
+    (var(--boot-cell-count) * var(--boot-cell-width)) +
+    (var(--boot-padding) * 2) +
+    (var(--boot-border) * 2)
+  );
+  max-width: 72vw;
+  height: 16px;
+  padding: var(--boot-padding);
+  border: var(--boot-border) solid #000;
+  background: #fff;
+}
+
+.boot-progress-cell {
   height: 10px;
-  border: 2px solid #000;
-  background:
-    linear-gradient(90deg, #000 0 15%, transparent 15% 19%, #000 19% 35%, transparent 35% 40%, #000 40% 57%, transparent 57% 62%, #000 62% 81%, transparent 81% 86%, #000 86% 100%)
-      no-repeat 0 0 / 0% 100%,
-    #efefef;
-  animation: boot-progress-fill 1.9s steps(8, end) forwards;
+  background-color: #f1f1f1;
+  background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.22) 0.8px, transparent 0);
+  background-size: 3px 3px;
+}
+
+.boot-progress-cell-filled {
+  background-color: #000;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.5) 0.8px, transparent 0);
+  background-size: 3px 3px;
 }
 
 .boot-overlay-transitioning {
   animation: boot-overlay-exit 1.05s steps(10, end) forwards;
-}
-
-@keyframes boot-progress-fill {
-  from {
-    background-size: 0% 100%, 100% 100%;
-  }
-  to {
-    background-size: 100% 100%, 100% 100%;
-  }
 }
 
 @keyframes boot-screen-flicker {
@@ -208,7 +222,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .boot-overlay,
   .boot-overlay-transitioning,
-  .boot-progress,
   .desktop-main-transitioning .desktop-shell {
     animation-duration: 0.2s !important;
     animation-iteration-count: 1 !important;
