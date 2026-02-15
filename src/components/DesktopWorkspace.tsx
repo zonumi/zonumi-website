@@ -268,6 +268,17 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   }, []);
 
   useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setActiveMenu(null);
+      setIsAboutModalOpen(false);
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
     const updateLayout = () => setIsDesktopLayout(media.matches);
     updateLayout();
