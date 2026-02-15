@@ -664,10 +664,10 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
           <Image
             src="/branding/brand/zonumi-menu-icon.png"
             alt="Zonumi"
-            width={20}
-            height={20}
+            width={18}
+            height={18}
             priority
-            className="h-5 w-5 shrink-0 object-cover object-center [image-rendering:pixelated]"
+            className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
           />
           {(["file", "view"] as MenuKey[]).map((menu) => (
             <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
