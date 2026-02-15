@@ -11,9 +11,7 @@ skills:
   CI/CD: ["GitHub Actions", "GitLab CI", "Jenkins", "TeamCity", "Nexus", "SonarQube"]
   Practices: ["Agile", "Microservices", "Event Sourcing", "SOLID", "TDD", "BDD", "Observability"]
 ---
-Senior Software Developer and consultant with over 17 years of experience delivering enterprise-grade systems in regulated and high-traffic environments.
-
-I specialize in Java/Kotlin backend engineering, React frontend delivery, and cloud-native microservices on AWS and Kubernetes. I apply modern engineering practices such as Infrastructure as Code, continuous delivery, and AI-assisted development to accelerate delivery while keeping quality high.
+Senior Software Developer with over 17 years' experience, specialising in Java, Kotlin, React, Spring Boot, AWS, and cloud-native microservices. Strong advocate of modern engineering practices including Infrastructure as Code, continuous delivery, and AI-assisted development using tools such as GitHub Copilot and Claude Code to accelerate delivery, improve code quality, and support architectural decision-making. Proven experience delivering enterprise-scale systems across highly regulated and high-traffic environments.
 
 ## Certifications and Education
 

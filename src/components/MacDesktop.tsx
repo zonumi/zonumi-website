@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import type { Engagement, Profile } from "@/lib/markdown-utils";
 
 type Panel = "about" | "skills" | "engagements" | "contact";
-type MenuKey = "file" | "view" | "go" | "help";
+type MenuKey = "file" | "edit" | "view" | "special";
 
 type MacDesktopProps = {
   profile: Profile;
@@ -29,17 +29,20 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
     { label: "Open Engagements", panel: "engagements" },
     { label: "Open Contact", panel: "contact" }
   ],
-  view: [
+  edit: [
     { label: "Profile Summary", panel: "about" },
-    { label: "Core Skills", panel: "skills" },
-    { label: "Client Timeline", panel: "engagements" }
+    { label: "Contact Actions", panel: "contact" }
   ],
-  go: [
-    { label: "Email Zonumi", panel: "contact" },
+  view: [
+    { label: "Project Finder", panel: "engagements" },
+    { label: "Skills Desk Accessory", panel: "skills" },
+    { label: "System Profile", panel: "about" }
+  ],
+  special: [
+    { label: "Email Nuno", panel: "contact" },
     { label: "LinkedIn", href: LINKEDIN_URL },
     { label: "GitHub", href: GITHUB_URL }
-  ],
-  help: [{ label: "How To Use", panel: "about" }]
+  ]
 };
 
 export function MacDesktop({ profile, engagements }: MacDesktopProps) {
@@ -66,6 +69,13 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     const certifications = profile.content.slice(match.index + heading.length).trim();
     return [summary, certifications];
   }, [profile.content]);
+  const yearsExperience = 17;
+  const skillGroups = Object.keys(profile.skills).length;
+  const totalSkills = Object.values(profile.skills).reduce((sum, skills) => sum + skills.length, 0);
+  const certificationsCount = certificationsContent
+    .split("\n")
+    .filter((line) => line.trim().startsWith("- "))
+    .length;
 
   useEffect(() => {
     const updateClock = () => {
@@ -184,14 +194,14 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       <header className="mac-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
         <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
           <span className="text-base leading-none"></span>
-          {(["file", "view", "go", "help"] as MenuKey[]).map((menu) => (
+          {(["file", "edit", "view", "special"] as MenuKey[]).map((menu) => (
             <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
               <button
                 type="button"
                 onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
-                className={`px-2 py-0.5 uppercase ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
+                className={`mac-menu-button px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
               >
-                {menu}
+                {menu[0].toUpperCase() + menu.slice(1)}
               </button>
               {activeMenu === menu ? (
                 <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]">
@@ -237,9 +247,13 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                     <h1>System Profile</h1>
                     <span className="mac-dot" />
                   </div>
+                  <div className="mac-subbar">
+                    <p>{yearsExperience}+ years</p>
+                    <p>{engagements.length} engagements</p>
+                    <p>{totalSkills} skills</p>
+                  </div>
                   <div className="mac-window-content space-y-4">
                     <div>
-                      <p className="text-xs uppercase tracking-wide">{profile.company}</p>
                       <h2 className="mt-1 text-lg">{profile.name}</h2>
                     </div>
                     <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
@@ -253,6 +267,11 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                     <span className="mac-dot" />
                     <h2>Certifications & Education</h2>
                     <span className="mac-dot" />
+                  </div>
+                  <div className="mac-subbar">
+                    <p>{certificationsCount} records</p>
+                    <p>2006-2018</p>
+                    <p>Professional track</p>
                   </div>
                   <div className="mac-window-content">
                     {certificationsContent ? (
@@ -271,6 +290,11 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                     <h2>Project Finder</h2>
                     <span className="mac-dot" />
                   </div>
+                  <div className="mac-subbar">
+                    <p>{engagements.length} items</p>
+                    <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
+                    <p>{selectedEngagement?.period ?? "No period"}</p>
+                  </div>
                   <div className="mac-window-content h-[320px] xl:h-[460px]">{renderProjectFinder(true)}</div>
                 </section>
 
@@ -279,6 +303,11 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                     <span className="mac-dot" />
                     <h2>Skills Desk Accessory</h2>
                     <span className="mac-dot" />
+                  </div>
+                  <div className="mac-subbar">
+                    <p>{skillGroups} groups</p>
+                    <p>{totalSkills} listed skills</p>
+                    <p>Cloud + Delivery</p>
                   </div>
                   <div className="mac-scroll mac-window-content h-[320px] overflow-y-scroll xl:h-[460px]">{renderSkills()}</div>
                 </section>
@@ -291,6 +320,29 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                 <h1>{panelTitle}</h1>
                 <span className="mac-dot" />
               </div>
+              <div className="mac-subbar">
+                {activePanel === "skills" ? (
+                  <>
+                    <p>{skillGroups} groups</p>
+                    <p>{totalSkills} listed skills</p>
+                    <p>Capability index</p>
+                  </>
+                ) : null}
+                {activePanel === "engagements" ? (
+                  <>
+                    <p>{engagements.length} contracts</p>
+                    <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
+                    <p>{selectedEngagement?.client ?? "No selection"}</p>
+                  </>
+                ) : null}
+                {activePanel === "contact" ? (
+                  <>
+                    <p>3 quick actions</p>
+                    <p>Email + LinkedIn + GitHub</p>
+                    <p>Response ready</p>
+                  </>
+                ) : null}
+              </div>
               <div className="mac-window-content">
                 {activePanel === "skills" ? renderSkills() : null}
 
@@ -298,7 +350,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
 
                 {activePanel === "contact" ? (
                   <div className="space-y-4 text-sm">
-                    <p>Use menu commands or quick actions below to contact Zonumi.</p>
+                    <p>Use menu commands or quick actions below to contact Nuno.</p>
                     <div className="flex flex-wrap gap-2">
                       <button type="button" onClick={handleCopyEmail} className="mac-action">
                         {copiedEmail ? "Email Copied" : "Copy Email"}
