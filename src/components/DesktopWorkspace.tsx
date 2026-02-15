@@ -17,10 +17,12 @@ type DesktopWorkspaceProps = {
 };
 
 type MenuAction = {
-  label: string;
+  label?: string;
   href?: string;
   windowId?: WindowId;
   download?: boolean;
+  separator?: boolean;
+  modal?: "about";
 };
 
 type WindowState = {
@@ -44,7 +46,7 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
     { label: "Projects", windowId: "about-project" },
     { label: "Skills", windowId: "about-skills" }
   ],
-  help: [{ label: "Contact...", windowId: "about-contact" }]
+  help: [{ label: "Contact...", windowId: "about-contact" }, { separator: true }, { label: "About", modal: "about" }]
 };
 
 const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
@@ -154,6 +156,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     "about-contact": false
   });
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
@@ -718,39 +721,49 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
                 </button>
                 {activeMenu === menu ? (
                   <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]" data-testid={`menu-dropdown-${menu}`}>
-                    {MENU_ITEMS[menu].map((action) => (
-                      <button
-                        key={action.label}
-                        type="button"
-                        onClick={() => {
-                          if (action.windowId) {
-                            showWindow(action.windowId);
-                            setActiveMenu(null);
-                            return;
-                          }
+                    {MENU_ITEMS[menu].map((action, index) =>
+                      action.separator ? (
+                        <div key={`separator-${menu}-${index}`} className="my-1 border-t border-black" role="separator" />
+                      ) : (
+                        <button
+                          key={action.label}
+                          type="button"
+                          onClick={() => {
+                            if (action.windowId) {
+                              showWindow(action.windowId);
+                              setActiveMenu(null);
+                              return;
+                            }
 
-                          if (action.href && action.download) {
-                            const link = document.createElement("a");
-                            link.href = action.href;
-                            link.download = "Nuno Castilho CV.pdf";
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            setActiveMenu(null);
-                            return;
-                          }
+                            if (action.modal === "about") {
+                              setIsAboutModalOpen(true);
+                              setActiveMenu(null);
+                              return;
+                            }
 
-                          if (action.href) {
-                            window.open(action.href, "_blank", "noreferrer");
-                            setActiveMenu(null);
-                          }
-                        }}
-                        className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
-                        data-testid={`menu-action-${action.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-                      >
-                        {action.label}
-                      </button>
-                    ))}
+                            if (action.href && action.download) {
+                              const link = document.createElement("a");
+                              link.href = action.href;
+                              link.download = "Nuno Castilho CV.pdf";
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              setActiveMenu(null);
+                              return;
+                            }
+
+                            if (action.href) {
+                              window.open(action.href, "_blank", "noreferrer");
+                              setActiveMenu(null);
+                            }
+                          }}
+                          className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
+                          data-testid={`menu-action-${action.label?.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+                        >
+                          {action.label}
+                        </button>
+                      )
+                    )}
                   </div>
                 ) : null}
               </div>
@@ -766,6 +779,31 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
           </div>
         </section>
       </div>
+      {isAboutModalOpen ? (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-gradient-to-br from-white/75 via-slate-100/80 to-zinc-200/75"
+          role="dialog"
+          aria-modal="true"
+          aria-label="About"
+          data-testid="about-modal"
+        >
+          <section className="w-[min(520px,92vw)] border-2 border-black bg-[#ececec] shadow-[6px_6px_0_#000]">
+            <div className="desktop-titlebar">
+              <button type="button" className="desktop-close-box" aria-label="Close About" onClick={() => setIsAboutModalOpen(false)} />
+              <h2>About</h2>
+            </div>
+            <div className="desktop-subbar">
+              <p />
+              <p>about</p>
+              <p />
+            </div>
+            <div className="desktop-window-content space-y-2">
+              <p className="text-sm">version x.x.xx</p>
+              <p className="text-sm">Built with Codex GPT 5.3.</p>
+            </div>
+          </section>
+        </div>
+      ) : null}
       {bootOverlay}
     </main>
   );
