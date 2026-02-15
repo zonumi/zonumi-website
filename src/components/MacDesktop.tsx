@@ -227,22 +227,33 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
           {activePanel === "about" ? (
             <>
               <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr]">
-                <section className="mac-window">
-                  <div className="mac-titlebar">
-                    <span className="mac-dot" />
-                    <h1>System Profile</h1>
-                    <span className="mac-dot" />
-                  </div>
-                  <div className="mac-window-content space-y-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide">{profile.company}</p>
-                      <h2 className="mt-1 text-lg">{profile.name}</h2>
+                <div className="space-y-4">
+                  <section className="mac-window">
+                    <div className="mac-titlebar">
+                      <span className="mac-dot" />
+                      <h1>System Profile</h1>
+                      <span className="mac-dot" />
                     </div>
-                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                      <Markdown>{aboutSummaryContent}</Markdown>
+                    <div className="mac-window-content space-y-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-wide">{profile.company}</p>
+                        <h2 className="mt-1 text-lg">{profile.name}</h2>
+                      </div>
+                      <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+                        <Markdown>{aboutSummaryContent}</Markdown>
+                      </div>
                     </div>
-                  </div>
-                </section>
+                  </section>
+
+                  <section className="mac-window">
+                    <div className="mac-titlebar">
+                      <span className="mac-dot" />
+                      <h2>Project Finder</h2>
+                      <span className="mac-dot" />
+                    </div>
+                    <div className="mac-window-content">{renderProjectFinder()}</div>
+                  </section>
+                </div>
 
                 <div className="space-y-4 xl:self-start">
                   <section className="mac-window">
@@ -268,19 +279,10 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
                       <h2>Skills Desk Accessory</h2>
                       <span className="mac-dot" />
                     </div>
-                    <div className="mac-window-content">{renderSkills()}</div>
+                    <div className="mac-scroll mac-window-content h-[360px] overflow-y-scroll xl:h-[560px]">{renderSkills()}</div>
                   </section>
                 </div>
               </div>
-
-              <section className="mac-window">
-                <div className="mac-titlebar">
-                  <span className="mac-dot" />
-                  <h2>Project Finder</h2>
-                  <span className="mac-dot" />
-                </div>
-                <div className="mac-window-content">{renderProjectFinder()}</div>
-              </section>
             </>
           ) : (
             <section className="mac-window">
