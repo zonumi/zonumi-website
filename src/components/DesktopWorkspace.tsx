@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import type { Project, Profile } from "@/lib/markdown-utils";
@@ -660,9 +661,14 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
     <main className="desktop-desktop flex h-screen flex-col overflow-hidden">
       <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
         <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
-          <span aria-hidden="true" className="text-base leading-none">
-            
-          </span>
+          <Image
+            src="/branding/brand/zonumi-menu-icon.png"
+            alt="Zonumi"
+            width={20}
+            height={20}
+            priority
+            className="h-5 w-5 shrink-0 object-cover object-center [image-rendering:pixelated]"
+          />
           {(["file", "view"] as MenuKey[]).map((menu) => (
             <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
               <button
