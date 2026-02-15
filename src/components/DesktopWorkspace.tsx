@@ -627,7 +627,7 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
     <>
       {renderWindowFrame(
         "about-profile",
-        "User Profile",
+        "System Profile",
         <>
           <p>{yearsExperience}+ years</p>
           <p>{projects.length} projects</p>
@@ -666,7 +666,7 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
 
       {renderWindowFrame(
         "about-project",
-        "Projects",
+        "Project Explorer",
         <>
           <p>{projects.length} projects</p>
           <p>{selectedProject?.technologies.length ?? 0} skills</p>
