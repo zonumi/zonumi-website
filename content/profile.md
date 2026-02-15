@@ -1,15 +1,6 @@
 ---
 name: "Nuno Castilho"
 company: "Zonumi Limited"
-skills:
-  Languages: ["Java", "Kotlin", "JavaScript", "TypeScript", "SQL", "Groovy"]
-  AI Tooling: ["GitHub Copilot", "Claude Code", "Gemini"]
-  Frameworks: ["Spring Boot", "Spring Cloud", "React", "Node.js", "Spock", "Gradle", "Maven"]
-  Infrastructure: ["AWS", "Azure", "Kubernetes", "Docker", "Terraform", "CloudFormation", "OpenShift"]
-  Databases: ["PostgreSQL", "MySQL", "Redis", "MongoDB", "Couchbase", "Oracle", "DynamoDB"]
-  Messaging: ["Kafka", "Kinesis", "RabbitMQ", "Apache Camel", "Spring Integration"]
-  CI/CD: ["GitHub Actions", "GitLab CI", "Jenkins", "TeamCity", "Nexus", "SonarQube"]
-  Practices: ["Agile", "Microservices", "Event Sourcing", "SOLID", "TDD", "BDD", "Observability"]
 ---
 Senior Software Developer with over 17 years' experience, specialising in Java, Kotlin, React, Spring Boot, AWS, and cloud-native microservices. Strong advocate of modern engineering practices including Infrastructure as Code, continuous delivery, and AI-assisted development using tools such as GitHub Copilot and Claude Code to accelerate delivery, improve code quality, and support architectural decision-making. Proven experience delivering enterprise-scale systems across highly regulated and high-traffic environments.
 

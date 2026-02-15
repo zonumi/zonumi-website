@@ -16,6 +16,10 @@ export type Project = {
 export type Profile = {
   name: string;
   company: string;
+  content: string;
+};
+
+export type SkillsContent = {
   skills: Record<string, string[]>;
   content: string;
 };
@@ -23,10 +27,22 @@ export type Profile = {
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 const PROJECTS_DIR = path.join(CONTENT_ROOT, "projects");
 const PROFILE_FILE = path.join(CONTENT_ROOT, "profile.md");
+const SKILLS_FILE = path.join(CONTENT_ROOT, "skills.md");
 
 function readMarkdownFile(filePath: string) {
   const raw = fs.readFileSync(filePath, "utf8");
   return matter(raw);
+}
+
+function normalizeSkills(value: unknown): Record<string, string[]> {
+  if (!value || typeof value !== "object") return {};
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([group, skills]) => [
+      String(group),
+      Array.isArray(skills) ? skills.map((skill) => String(skill)) : []
+    ])
+  );
 }
 
 export function getAllProjects(): Project[] {
@@ -61,7 +77,15 @@ export function getProfile(): Profile {
   return {
     name: String(data.name ?? ""),
     company: String(data.company ?? ""),
-    skills: (data.skills as Record<string, string[]>) ?? {},
+    content
+  };
+}
+
+export function getSkills(): SkillsContent {
+  const { data, content } = readMarkdownFile(SKILLS_FILE);
+
+  return {
+    skills: normalizeSkills(data.skills),
     content
   };
 }

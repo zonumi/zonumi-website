@@ -19,6 +19,7 @@ type WindowId =
 type DesktopWorkspaceProps = {
   profile: Profile;
   projects: Project[];
+  skills: Record<string, string[]>;
 };
 
 type MenuAction = {
@@ -225,7 +226,7 @@ function DesktopVerticalScroll({
   );
 }
 
-export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
+export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspaceProps) {
   const [hasMounted, setHasMounted] = useState(false);
   const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
@@ -278,8 +279,8 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
   const mergedSkills = useMemo(() => {
     const grouped = new Map<string, Set<string>>();
 
-    Object.entries(profile.skills).forEach(([group, skills]) => {
-      grouped.set(group, new Set(skills));
+    Object.entries(skills).forEach(([group, groupSkills]) => {
+      grouped.set(group, new Set(groupSkills));
     });
 
     const knownSkills = new Set(Array.from(grouped.values()).flatMap((skills) => Array.from(skills)));
@@ -304,7 +305,7 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
       group,
       skills: Array.from(skills).sort((a, b) => a.localeCompare(b))
     }));
-  }, [projects, profile.skills]);
+  }, [projects, skills]);
   const skillGroups = mergedSkills.length;
   const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
   const certificationsCount = certificationsContent
