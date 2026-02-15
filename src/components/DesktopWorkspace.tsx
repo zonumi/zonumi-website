@@ -803,7 +803,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   return (
     <main className={`desktop-main desktop-main-${bootPhase}`}>
       <div className="desktop-shell desktop-desktop flex h-screen flex-col overflow-hidden">
-        <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
+        <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 sm:px-5">
           <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
             <Image
               src="/branding/brand/zonumi-menu-icon.png"
@@ -818,7 +818,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
                 <button
                   type="button"
                   onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
-                  className={`px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
+                  className={`desktop-menu-trigger px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
                 >
                   {menu[0].toUpperCase() + menu.slice(1)}
                 </button>
@@ -867,7 +867,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               </div>
             ))}
 
-            <p className="ml-auto hidden text-[11px] sm:block">
+            <p className="desktop-menu-clock ml-auto hidden sm:block">
               {profile.company} <span className="px-1">|</span> {clockText}
             </p>
           </div>
