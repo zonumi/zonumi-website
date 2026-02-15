@@ -2,6 +2,7 @@
 client: "Marks & Spencer"
 role: "Software Engineer"
 period: "May 2013 – Jan 2014"
+logo: "/branding/clients/marks-and-spencer.svg"
 technologies: ["Apigee", "Java", "Spring", "Hibernate", "MongoDB", "jQuery", "Maven"]
 weight: 100
 ---

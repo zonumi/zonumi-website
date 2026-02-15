@@ -104,7 +104,7 @@ export default function HomePage() {
                 <div key={group}>
                   <h3 className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-signal-400 print:text-black">{group}</h3>
                   <ul className="flex flex-wrap gap-2">
-                    {skills.map((skill) => (
+                    {skills.slice(0, 6).map((skill) => (
                       <li
                         key={`${group}-${skill}`}
                         className="rounded-md border border-ink-300/35 bg-ink-800/80 px-2.5 py-1 font-mono text-xs text-ink-50 print:border-black print:bg-transparent print:text-black"
@@ -112,6 +112,11 @@ export default function HomePage() {
                         {skill}
                       </li>
                     ))}
+                    {skills.length > 6 ? (
+                      <li className="rounded-md border border-neon-300/35 bg-neon-400/10 px-2.5 py-1 font-mono text-xs text-neon-300 print:border-black print:bg-transparent print:text-black">
+                        +{skills.length - 6} more
+                      </li>
+                    ) : null}
                   </ul>
                 </div>
               ))}

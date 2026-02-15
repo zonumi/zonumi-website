@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="64" viewBox="0 0 220 64" fill="none">
+  <rect width="220" height="64" rx="10" fill="#111111"/>
+  <text x="110" y="40" text-anchor="middle" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">accenture</text>
+  <path d="M147 17L156 13L148 26" fill="#A100FF"/>
+</svg>

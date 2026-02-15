@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type FilterBarProps = {
@@ -11,6 +12,8 @@ export function FilterBar({ technologies, selectedTech = "" }: FilterBarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const [showAll, setShowAll] = useState(false);
+  const [query, setQuery] = useState("");
 
   const updateFilter = (tech: string) => {
     const nextParams = new URLSearchParams(params.toString());
@@ -25,6 +28,13 @@ export function FilterBar({ technologies, selectedTech = "" }: FilterBarProps) {
   };
 
   const isActive = (tech: string) => tech.toLowerCase() === selectedTech.toLowerCase();
+  const filteredTechnologies = useMemo(() => {
+    const filtered = technologies.filter((tech) => tech.toLowerCase().includes(query.trim().toLowerCase()));
+    if (showAll || filtered.length <= 18) {
+      return filtered;
+    }
+    return filtered.slice(0, 18);
+  }, [technologies, query, showAll]);
 
   return (
     <div
@@ -42,8 +52,24 @@ export function FilterBar({ technologies, selectedTech = "" }: FilterBarProps) {
           reset
         </button>
       </div>
-      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
-        {technologies.map((tech) => (
+      <div className="mb-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <input
+          type="text"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="search technology..."
+          className="w-full rounded-md border border-ink-300/35 bg-ink-800/70 px-3 py-2 font-mono text-xs text-ink-50 placeholder:text-ink-100/70 focus:border-neon-300 focus:outline-none md:max-w-xs"
+        />
+        <button
+          type="button"
+          onClick={() => setShowAll((current) => !current)}
+          className="self-start rounded-md border border-ink-300/35 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-100 transition hover:border-neon-300 hover:text-neon-300"
+        >
+          {showAll ? "show top" : "show all"}
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
+        {filteredTechnologies.map((tech) => (
           <button
             key={tech}
             type="button"
@@ -60,6 +86,11 @@ export function FilterBar({ technologies, selectedTech = "" }: FilterBarProps) {
           </button>
         ))}
       </div>
+      {!showAll && technologies.length > 18 ? (
+        <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-100">
+          showing {Math.min(filteredTechnologies.length, 18)} of {technologies.length}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -7,6 +7,7 @@ export type Engagement = {
   client: string;
   role: string;
   period: string;
+  logo: string;
   technologies: string[];
   weight: number;
   content: string;
@@ -43,6 +44,7 @@ export function getAllEngagements(): Engagement[] {
         client: String(data.client ?? ""),
         role: String(data.role ?? ""),
         period: String(data.period ?? ""),
+        logo: String(data.logo ?? ""),
         technologies: Array.isArray(data.technologies)
           ? data.technologies.map((tech) => String(tech))
           : [],

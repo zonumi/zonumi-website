@@ -2,6 +2,7 @@
 client: "Ladbrokes Coral"
 role: "Senior Software Engineer"
 period: "Jul 2018 – Oct 2018"
+logo: "/branding/clients/ladbrokes-coral.svg"
 technologies: ["Java", "Spring Boot", "PostgreSQL", "Kafka", "React", "Node.js", "Jenkins", "Terraform", "AWS", "TDD"]
 weight: 112
 ---

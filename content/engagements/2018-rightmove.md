@@ -2,6 +2,7 @@
 client: "Rightmove"
 role: "Senior Software Engineer"
 period: "Nov 2018 – Mar 2021"
+logo: "/branding/clients/rightmove.svg"
 technologies: ["Java", "Spring Boot", "Kafka", "Oracle", "React", "Redux", "Elasticsearch", "TDD"]
 weight: 114
 ---

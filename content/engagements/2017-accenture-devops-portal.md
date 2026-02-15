@@ -2,6 +2,7 @@
 client: "Accenture"
 role: "Senior Software Developer"
 period: "Apr 2017 – Oct 2017"
+logo: "/branding/clients/accenture.svg"
 technologies: ["Java", "Spring Boot", "Spring Cloud", "Spring Security", "JWT", "OAuth2", "MongoDB", "RabbitMQ", "Apache Camel", "Docker", "OpenShift", "Jenkins", "React", "Node.js"]
 weight: 108
 ---

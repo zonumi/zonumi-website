@@ -2,6 +2,7 @@
 client: "Accenture"
 role: "Senior Software Developer"
 period: "May 2014 – Dec 2014"
+logo: "/branding/clients/accenture.svg"
 technologies: ["Java", "Spring", "Spring Webflow", "Spring Boot", "MongoDB", "Jenkins", "Eclipse"]
 weight: 104
 ---

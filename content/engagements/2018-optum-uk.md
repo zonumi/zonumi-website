@@ -2,6 +2,7 @@
 client: "Optum UK"
 role: "Senior Software Engineer"
 period: "Mar 2018 – Jun 2018"
+logo: "/branding/clients/optum.svg"
 technologies: ["Java", "PostgreSQL", "Jetty", "OSGi", "SAML2", "Shell Scripting"]
 weight: 110
 ---

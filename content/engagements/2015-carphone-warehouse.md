@@ -2,6 +2,7 @@
 client: "Carphone Warehouse"
 role: "Senior Software Developer"
 period: "Jan 2015 – Jan 2016"
+logo: "/branding/clients/carphone-warehouse.svg"
 technologies: ["Java", "Spring Boot", "Spring MVC", "Spring Security", "Elasticsearch", "MongoDB", "Mule", "Angular", "Cucumber", "BDD"]
 weight: 106
 ---

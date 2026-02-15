@@ -2,6 +2,7 @@
 client: "The Workshop"
 role: "Senior Software Engineer"
 period: "Jun 2023 – Sep 2023"
+logo: "/branding/clients/the-workshop.svg"
 technologies: ["Java", "Spring Boot", "PostgreSQL", "Kubernetes", "React", "SonarQube", "Jira"]
 weight: 118
 ---

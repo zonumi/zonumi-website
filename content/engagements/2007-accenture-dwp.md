@@ -2,6 +2,7 @@
 client: "Accenture (DWP)"
 role: "Software Engineer"
 period: "Jan 2007 – May 2013"
+logo: "/branding/clients/accenture.svg"
 technologies: ["Java", "Java EE", "Spring", "JPA", "Hibernate", "JBoss", "WebCenter", "JSR286", "Maven"]
 weight: 98
 ---

@@ -2,6 +2,7 @@
 client: "Ticketmaster"
 role: "Senior Software Engineer"
 period: "Oct 2023 – Present"
+logo: "/branding/clients/ticketmaster.svg"
 technologies: ["Java", "Kotlin", "Spring Boot", "WebFlux", "Spring Cloud Gateway", "React", "AWS", "EKS", "MySQL", "Flyway", "GitLab CI", "Claude Code", "GitHub Copilot"]
 weight: 120
 ---

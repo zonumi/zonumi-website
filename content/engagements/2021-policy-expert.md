@@ -2,6 +2,7 @@
 client: "Policy Expert (QMetric)"
 role: "Senior Software Engineer"
 period: "May 2021 – Mar 2023"
+logo: "/branding/clients/policy-expert.svg"
 technologies: ["Java", "Spring Boot", "AWS", "S3", "SQS", "DynamoDB", "RDS", "Fargate", "GitHub Actions", "OpenTelemetry", "X-Ray"]
 weight: 116
 ---
