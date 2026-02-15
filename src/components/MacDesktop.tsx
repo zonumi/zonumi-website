@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import type { Engagement, Profile } from "@/lib/markdown-utils";
 
 type Panel = "about" | "skills" | "engagements" | "contact";
-type MenuKey = "file" | "edit" | "view" | "special";
+type MenuKey = "view";
 type WindowId =
   | "about-profile"
   | "about-certs"
@@ -38,26 +38,11 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/nuno-castilho";
 const GITHUB_URL = "https://github.com/ncastilho";
 
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
-  file: [
-    { label: "Open About Desktop", panel: "about" },
-    { label: "Open Skills Window", panel: "skills" },
-    { label: "Open Engagement Window", panel: "engagements" },
-    { label: "Open Contact Window", panel: "contact" }
-  ],
-  edit: [
-    { label: "Profile Summary", panel: "about" },
-    { label: "Contact Actions", panel: "contact" }
-  ],
   view: [
     { label: "System Profile", panel: "about", windowId: "about-profile" },
     { label: "Certifications", panel: "about", windowId: "about-certs" },
     { label: "Project Finder", panel: "about", windowId: "about-project" },
     { label: "Skills Desk Accessory", panel: "about", windowId: "about-skills" }
-  ],
-  special: [
-    { label: "Email Nuno", panel: "contact" },
-    { label: "LinkedIn", href: LINKEDIN_URL },
-    { label: "GitHub", href: GITHUB_URL }
   ]
 };
 
@@ -77,6 +62,78 @@ const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
   contact: "panel-contact"
 };
 const ABOUT_WINDOWS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
+
+const TECHNOLOGY_CATEGORY_OVERRIDES: Record<string, string> = {
+  Angular: "Frameworks",
+  Bootstrap: "Frameworks",
+  Hibernate: "Frameworks",
+  "Java EE": "Frameworks",
+  JPA: "Frameworks",
+  jQuery: "Frameworks",
+  JSF: "Frameworks",
+  Redux: "Frameworks",
+  Spring: "Frameworks",
+  "Spring Cloud Gateway": "Frameworks",
+  "Spring MVC": "Frameworks",
+  "Spring Security": "Frameworks",
+  "Spring Webflow": "Frameworks",
+  WebFlux: "Frameworks",
+  EKS: "Infrastructure",
+  Fargate: "Infrastructure",
+  S3: "Infrastructure",
+  Elasticsearch: "Databases",
+  Flyway: "Databases",
+  RDS: "Databases",
+  SQS: "Messaging",
+  Mule: "APIs & Integration",
+  ClearCase: "CI/CD",
+  Octopus: "CI/CD",
+  "OpenTelemetry": "Practices",
+  "X-Ray": "Practices",
+  Cucumber: "Practices",
+  Apigee: "APIs & Integration",
+  "IBM AS/400": "APIs & Integration",
+  JSR286: "APIs & Integration",
+  Salesforce: "APIs & Integration",
+  WSRP: "APIs & Integration",
+  JWT: "Security & Identity",
+  OAuth2: "Security & Identity",
+  SAML2: "Security & Identity",
+  JBoss: "Platforms & Middleware",
+  Jetty: "Platforms & Middleware",
+  OSGi: "Platforms & Middleware",
+  Tomcat: "Platforms & Middleware",
+  WebCenter: "Platforms & Middleware",
+  "WebSphere Commerce": "Platforms & Middleware",
+  Eclipse: "Developer Tooling",
+  Jira: "Developer Tooling",
+  JMeter: "Developer Tooling",
+  ASP: "Web & Markup",
+  CSS: "Web & Markup",
+  HTML: "Web & Markup",
+  VBScript: "Web & Markup",
+  "Active Directory": "Operating Systems & Networking",
+  DHCP: "Operating Systems & Networking",
+  DNS: "Operating Systems & Networking",
+  "Exchange 2000": "Operating Systems & Networking",
+  IIS5: "Operating Systems & Networking",
+  "ISA 2000/2004": "Operating Systems & Networking",
+  POP3: "Operating Systems & Networking",
+  SMTP: "Operating Systems & Networking",
+  VPN: "Operating Systems & Networking",
+  Windows: "Operating Systems & Networking",
+  "Windows 2000": "Operating Systems & Networking",
+  "Windows NT": "Operating Systems & Networking",
+  "Windows NT4": "Operating Systems & Networking",
+  WINS: "Operating Systems & Networking",
+  "Desktop Installation": "Operations & Support",
+  "Desktop Rollout": "Operations & Support",
+  "Network Administration": "Operations & Support",
+  "Shell Scripting": "Operations & Support",
+  "Small Office Networks": "Operations & Support",
+  "Technical Support": "Operations & Support",
+  "Visual Basic": "Languages"
+};
 
 function MacVerticalScroll({
   className,
@@ -149,8 +206,38 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   }, [profile.content]);
 
   const yearsExperience = 17;
-  const skillGroups = Object.keys(profile.skills).length;
-  const totalSkills = Object.values(profile.skills).reduce((sum, skills) => sum + skills.length, 0);
+  const mergedSkills = useMemo(() => {
+    const grouped = new Map<string, Set<string>>();
+
+    Object.entries(profile.skills).forEach(([group, skills]) => {
+      grouped.set(group, new Set(skills));
+    });
+
+    const knownSkills = new Set(Array.from(grouped.values()).flatMap((skills) => Array.from(skills)));
+
+    engagements.forEach((engagement) => {
+      engagement.technologies.forEach((technology) => {
+        if (knownSkills.has(technology)) {
+          return;
+        }
+
+        const targetGroup = TECHNOLOGY_CATEGORY_OVERRIDES[technology] ?? "Additional Technologies";
+        if (!grouped.has(targetGroup)) {
+          grouped.set(targetGroup, new Set());
+        }
+
+        grouped.get(targetGroup)?.add(technology);
+        knownSkills.add(technology);
+      });
+    });
+
+    return Array.from(grouped.entries()).map(([group, skills]) => ({
+      group,
+      skills: Array.from(skills).sort((a, b) => a.localeCompare(b))
+    }));
+  }, [engagements, profile.skills]);
+  const skillGroups = mergedSkills.length;
+  const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
   const certificationsCount = certificationsContent
     .split("\n")
     .filter((line) => line.trim().startsWith("- "))
@@ -426,7 +513,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
 
   const renderSkills = () => (
     <div className="space-y-3">
-      {Object.entries(profile.skills).map(([group, skills]) => (
+      {mergedSkills.map(({ group, skills }) => (
         <article key={group} className="border-2 border-black bg-[#f1f1f1] p-2">
           <h3 className="mb-2 text-xs uppercase">{group}</h3>
           <ul className="flex flex-wrap gap-2">
@@ -571,7 +658,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       <header className="mac-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
         <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
           <span className="text-base leading-none"></span>
-          {(["file", "edit", "view", "special"] as MenuKey[]).map((menu) => (
+          {(["view"] as MenuKey[]).map((menu) => (
             <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
               <button
                 type="button"
