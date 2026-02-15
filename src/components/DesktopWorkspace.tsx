@@ -660,7 +660,9 @@ export function DesktopWorkspace({ profile, projects }: DesktopWorkspaceProps) {
     <main className="desktop-desktop flex h-screen flex-col overflow-hidden">
       <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
         <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
-          <span className="text-base leading-none">■</span>
+          <span aria-hidden="true" className="text-base leading-none">
+            
+          </span>
           {(["file", "view"] as MenuKey[]).map((menu) => (
             <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
               <button
