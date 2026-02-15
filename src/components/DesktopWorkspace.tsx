@@ -597,7 +597,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         "Profile",
         <>
           <p>{yearsExperience}+ years</p>
-          <p>{projects.length} projects</p>
+          <p />
           <p>{totalSkills} skills</p>
         </>,
         <div className="desktop-window-content space-y-4">
@@ -616,7 +616,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         "Education",
         <>
           <p>{certificationsCount} records</p>
-          <p>2006-2018</p>
+          <p />
           <p>certifications</p>
         </>,
         <div className="desktop-window-content">
@@ -636,7 +636,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         "Projects",
         <>
           <p>{projects.length} projects</p>
-          <p>{selectedProject?.technologies.length ?? 0} skills</p>
+          <p />
           <p>{selectedProject?.period ?? "no period"}</p>
         </>,
         <div className="desktop-window-content h-[320px] overflow-hidden xl:h-[460px]">{renderProjectFinder(true)}</div>,
@@ -648,7 +648,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         "Skills",
         <>
           <p>{skillGroups} groups</p>
-          <p>{totalSkills} skills</p>
+          <p />
           <p>cloud + delivery</p>
         </>,
         <div className="desktop-window-content h-[320px] overflow-hidden xl:h-[460px]">
@@ -805,7 +805,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             </div>
             <div className="desktop-subbar">
               <p />
-              <p>about</p>
+              <p />
               <p />
             </div>
             <div className="desktop-window-content space-y-2">
