@@ -1,11 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import type { Engagement, Profile } from "@/lib/markdown-utils";
 
 type Panel = "about" | "skills" | "engagements" | "contact";
 type MenuKey = "file" | "edit" | "view" | "special";
+type WindowId =
+  | "about-profile"
+  | "about-certs"
+  | "about-project"
+  | "about-skills"
+  | "panel-skills"
+  | "panel-engagements"
+  | "panel-contact";
 
 type MacDesktopProps = {
   profile: Profile;
@@ -16,6 +24,12 @@ type MenuAction = {
   label: string;
   panel?: Panel;
   href?: string;
+};
+
+type WindowState = {
+  x: number;
+  y: number;
+  z: number;
 };
 
 const CONTACT_EMAIL = "nuno.castilho@outlook.com";
@@ -45,17 +59,39 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   ]
 };
 
+const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
+  "about-profile": { x: 20, y: 24, z: 1 },
+  "about-certs": { x: 900, y: 24, z: 2 },
+  "about-project": { x: 20, y: 306, z: 3 },
+  "about-skills": { x: 900, y: 306, z: 4 },
+  "panel-skills": { x: 56, y: 44, z: 5 },
+  "panel-engagements": { x: 56, y: 44, z: 6 },
+  "panel-contact": { x: 120, y: 72, z: 7 }
+};
+
+const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
+  skills: "panel-skills",
+  engagements: "panel-engagements",
+  contact: "panel-contact"
+};
+
 export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(engagements[0]?.slug ?? "");
   const [clockText, setClockText] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isDesktopLayout, setIsDesktopLayout] = useState(false);
+  const [zCounter, setZCounter] = useState(20);
+  const [windowPositions, setWindowPositions] = useState(INITIAL_WINDOWS);
+  const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
 
   const selectedEngagement = useMemo(
     () => engagements.find((engagement) => engagement.slug === selectedSlug) ?? engagements[0],
     [engagements, selectedSlug]
   );
+
   const [aboutSummaryContent, certificationsContent] = useMemo(() => {
     const sectionHeadingPattern = /^##\s+Certifications and Education\s*$/im;
     const match = profile.content.match(sectionHeadingPattern);
@@ -69,6 +105,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     const certifications = profile.content.slice(match.index + heading.length).trim();
     return [summary, certifications];
   }, [profile.content]);
+
   const yearsExperience = 17;
   const skillGroups = Object.keys(profile.skills).length;
   const totalSkills = Object.values(profile.skills).reduce((sum, skills) => sum + skills.length, 0);
@@ -99,9 +136,93 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
     return () => window.removeEventListener("click", closeMenus);
   }, []);
 
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const updateLayout = () => setIsDesktopLayout(media.matches);
+    updateLayout();
+    media.addEventListener("change", updateLayout);
+    return () => media.removeEventListener("change", updateLayout);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktopLayout) {
+      dragRef.current = null;
+      return;
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      const drag = dragRef.current;
+      const canvas = canvasRef.current;
+      if (!drag || !canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.max(0, event.clientX - rect.left - drag.offsetX);
+      const y = Math.max(0, event.clientY - rect.top - drag.offsetY);
+
+      setWindowPositions((current) => ({
+        ...current,
+        [drag.id]: {
+          ...current[drag.id],
+          x,
+          y
+        }
+      }));
+    };
+
+    const onMouseUp = () => {
+      dragRef.current = null;
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isDesktopLayout]);
+
+  const bringToFront = (id: WindowId) => {
+    setZCounter((prev) => {
+      const next = prev + 1;
+      setWindowPositions((current) => ({
+        ...current,
+        [id]: {
+          ...current[id],
+          z: next
+        }
+      }));
+      return next;
+    });
+  };
+
+  const beginDrag = (id: WindowId, event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDesktopLayout) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    bringToFront(id);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const current = windowPositions[id];
+
+    dragRef.current = {
+      id,
+      offsetX: event.clientX - rect.left - current.x,
+      offsetY: event.clientY - rect.top - current.y
+    };
+  };
+
   const openPanel = (panel: Panel) => {
     setActivePanel(panel);
     setActiveMenu(null);
+
+    if (panel !== "about") {
+      bringToFront(PANEL_WINDOW_MAP[panel]);
+    }
   };
 
   const handleCopyEmail = async () => {
@@ -122,6 +243,42 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         : activePanel === "engagements"
           ? "Project Finder"
           : "Contact Console";
+
+  const getWindowStyle = (id: WindowId, width: number | string) => {
+    if (!isDesktopLayout) return undefined;
+
+    const state = windowPositions[id];
+    return {
+      left: state.x,
+      top: state.y,
+      width,
+      zIndex: state.z
+    };
+  };
+
+  const renderWindowFrame = (
+    id: WindowId,
+    title: string,
+    subbar: ReactNode,
+    content: ReactNode,
+    width: number | string,
+    extraClass = ""
+  ) => (
+    <section
+      className={`mac-window ${isDesktopLayout ? "absolute" : ""} ${extraClass}`}
+      style={getWindowStyle(id, width)}
+      onMouseDown={() => (isDesktopLayout ? bringToFront(id) : null)}
+      data-window-id={id}
+    >
+      <div className="mac-titlebar mac-drag-handle" onMouseDown={(event) => beginDrag(id, event)}>
+        <span className="mac-dot" />
+        <h2>{title}</h2>
+        <span className="mac-dot" />
+      </div>
+      <div className="mac-subbar">{subbar}</div>
+      {content}
+    </section>
+  );
 
   const renderProjectFinder = (constrainedHeight = false) => (
     <div className={`grid gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
@@ -172,6 +329,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       </article>
     </div>
   );
+
   const renderSkills = () => (
     <div className="space-y-3">
       {Object.entries(profile.skills).map(([group, skills]) => (
@@ -188,6 +346,127 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       ))}
     </div>
   );
+
+  const aboutWindows = (
+    <>
+      {renderWindowFrame(
+        "about-profile",
+        "System Profile",
+        <>
+          <p>{yearsExperience}+ years</p>
+          <p>{engagements.length} engagements</p>
+          <p>{totalSkills} skills</p>
+        </>,
+        <div className="mac-window-content space-y-4">
+          <div>
+            <h2 className="mt-1 text-lg">{profile.name}</h2>
+          </div>
+          <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+            <Markdown>{aboutSummaryContent}</Markdown>
+          </div>
+        </div>,
+        860
+      )}
+
+      {renderWindowFrame(
+        "about-certs",
+        "Certifications & Education",
+        <>
+          <p>{certificationsCount} records</p>
+          <p>2006-2018</p>
+          <p>Professional track</p>
+        </>,
+        <div className="mac-window-content">
+          {certificationsContent ? (
+            <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+              <Markdown>{certificationsContent}</Markdown>
+            </div>
+          ) : (
+            <p className="text-sm">No certifications section found in profile content.</p>
+          )}
+        </div>,
+        470
+      )}
+
+      {renderWindowFrame(
+        "about-project",
+        "Project Finder",
+        <>
+          <p>{engagements.length} items</p>
+          <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
+          <p>{selectedEngagement?.period ?? "No period"}</p>
+        </>,
+        <div className="mac-window-content h-[320px] xl:h-[460px]">{renderProjectFinder(true)}</div>,
+        860
+      )}
+
+      {renderWindowFrame(
+        "about-skills",
+        "Skills Desk Accessory",
+        <>
+          <p>{skillGroups} groups</p>
+          <p>{totalSkills} listed skills</p>
+          <p>Cloud + Delivery</p>
+        </>,
+        <div className="mac-scroll mac-window-content h-[320px] overflow-y-scroll xl:h-[460px]">{renderSkills()}</div>,
+        470
+      )}
+    </>
+  );
+
+  const singlePanelWindow =
+    activePanel === "about"
+      ? null
+      : renderWindowFrame(
+          PANEL_WINDOW_MAP[activePanel],
+          panelTitle,
+          activePanel === "skills" ? (
+            <>
+              <p>{skillGroups} groups</p>
+              <p>{totalSkills} listed skills</p>
+              <p>Capability index</p>
+            </>
+          ) : activePanel === "engagements" ? (
+            <>
+              <p>{engagements.length} contracts</p>
+              <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
+              <p>{selectedEngagement?.client ?? "No selection"}</p>
+            </>
+          ) : (
+            <>
+              <p>3 quick actions</p>
+              <p>Email + LinkedIn + GitHub</p>
+              <p>Response ready</p>
+            </>
+          ),
+          <div className="mac-window-content">
+            {activePanel === "skills" ? renderSkills() : null}
+            {activePanel === "engagements" ? renderProjectFinder() : null}
+            {activePanel === "contact" ? (
+              <div className="space-y-4 text-sm">
+                <p>Use menu commands or quick actions below to contact Nuno.</p>
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" onClick={handleCopyEmail} className="mac-action">
+                    {copiedEmail ? "Email Copied" : "Copy Email"}
+                  </button>
+                  <a className="mac-action" href={`mailto:${CONTACT_EMAIL}`}>
+                    Send Email
+                  </a>
+                  <a className="mac-action" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
+                    Open LinkedIn
+                  </a>
+                  <a className="mac-action" href={GITHUB_URL} target="_blank" rel="noreferrer">
+                    Open GitHub
+                  </a>
+                </div>
+                <p className="text-xs">
+                  Direct contact: <strong>{CONTACT_EMAIL}</strong>
+                </p>
+              </div>
+            ) : null}
+          </div>,
+          isDesktopLayout ? 980 : "100%"
+        );
 
   return (
     <main className="mac-desktop min-h-screen">
@@ -237,142 +516,8 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       </header>
 
       <section className="mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6">
-        <div className="space-y-4">
-          {activePanel === "about" ? (
-            <>
-              <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr] xl:grid-rows-[auto_auto]">
-                <section className="mac-window xl:col-start-1 xl:row-start-1">
-                  <div className="mac-titlebar">
-                    <span className="mac-dot" />
-                    <h1>System Profile</h1>
-                    <span className="mac-dot" />
-                  </div>
-                  <div className="mac-subbar">
-                    <p>{yearsExperience}+ years</p>
-                    <p>{engagements.length} engagements</p>
-                    <p>{totalSkills} skills</p>
-                  </div>
-                  <div className="mac-window-content space-y-4">
-                    <div>
-                      <h2 className="mt-1 text-lg">{profile.name}</h2>
-                    </div>
-                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                      <Markdown>{aboutSummaryContent}</Markdown>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="mac-window xl:col-start-2 xl:row-start-1">
-                  <div className="mac-titlebar">
-                    <span className="mac-dot" />
-                    <h2>Certifications & Education</h2>
-                    <span className="mac-dot" />
-                  </div>
-                  <div className="mac-subbar">
-                    <p>{certificationsCount} records</p>
-                    <p>2006-2018</p>
-                    <p>Professional track</p>
-                  </div>
-                  <div className="mac-window-content">
-                    {certificationsContent ? (
-                      <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                        <Markdown>{certificationsContent}</Markdown>
-                      </div>
-                    ) : (
-                      <p className="text-sm">No certifications section found in profile content.</p>
-                    )}
-                  </div>
-                </section>
-
-                <section className="mac-window xl:col-start-1 xl:row-start-2">
-                  <div className="mac-titlebar">
-                    <span className="mac-dot" />
-                    <h2>Project Finder</h2>
-                    <span className="mac-dot" />
-                  </div>
-                  <div className="mac-subbar">
-                    <p>{engagements.length} items</p>
-                    <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
-                    <p>{selectedEngagement?.period ?? "No period"}</p>
-                  </div>
-                  <div className="mac-window-content h-[320px] xl:h-[460px]">{renderProjectFinder(true)}</div>
-                </section>
-
-                <section className="mac-window xl:col-start-2 xl:row-start-2">
-                  <div className="mac-titlebar">
-                    <span className="mac-dot" />
-                    <h2>Skills Desk Accessory</h2>
-                    <span className="mac-dot" />
-                  </div>
-                  <div className="mac-subbar">
-                    <p>{skillGroups} groups</p>
-                    <p>{totalSkills} listed skills</p>
-                    <p>Cloud + Delivery</p>
-                  </div>
-                  <div className="mac-scroll mac-window-content h-[320px] overflow-y-scroll xl:h-[460px]">{renderSkills()}</div>
-                </section>
-              </div>
-            </>
-          ) : (
-            <section className="mac-window">
-              <div className="mac-titlebar">
-                <span className="mac-dot" />
-                <h1>{panelTitle}</h1>
-                <span className="mac-dot" />
-              </div>
-              <div className="mac-subbar">
-                {activePanel === "skills" ? (
-                  <>
-                    <p>{skillGroups} groups</p>
-                    <p>{totalSkills} listed skills</p>
-                    <p>Capability index</p>
-                  </>
-                ) : null}
-                {activePanel === "engagements" ? (
-                  <>
-                    <p>{engagements.length} contracts</p>
-                    <p>{selectedEngagement?.technologies.length ?? 0} tech tags</p>
-                    <p>{selectedEngagement?.client ?? "No selection"}</p>
-                  </>
-                ) : null}
-                {activePanel === "contact" ? (
-                  <>
-                    <p>3 quick actions</p>
-                    <p>Email + LinkedIn + GitHub</p>
-                    <p>Response ready</p>
-                  </>
-                ) : null}
-              </div>
-              <div className="mac-window-content">
-                {activePanel === "skills" ? renderSkills() : null}
-
-                {activePanel === "engagements" ? renderProjectFinder() : null}
-
-                {activePanel === "contact" ? (
-                  <div className="space-y-4 text-sm">
-                    <p>Use menu commands or quick actions below to contact Nuno.</p>
-                    <div className="flex flex-wrap gap-2">
-                      <button type="button" onClick={handleCopyEmail} className="mac-action">
-                        {copiedEmail ? "Email Copied" : "Copy Email"}
-                      </button>
-                      <a className="mac-action" href={`mailto:${CONTACT_EMAIL}`}>
-                        Send Email
-                      </a>
-                      <a className="mac-action" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
-                        Open LinkedIn
-                      </a>
-                      <a className="mac-action" href={GITHUB_URL} target="_blank" rel="noreferrer">
-                        Open GitHub
-                      </a>
-                    </div>
-                    <p className="text-xs">
-                      Direct contact: <strong>{CONTACT_EMAIL}</strong>
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-            </section>
-          )}
+        <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-[980px]" : "space-y-4"}`}>
+          {activePanel === "about" ? aboutWindows : singlePanelWindow}
         </div>
       </section>
     </main>
