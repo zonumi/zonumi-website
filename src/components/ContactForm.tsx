@@ -7,6 +7,7 @@ const FORMSPREE_FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
 const MIN_FILL_TIME_MS = 3000;
 const SUBMIT_COOLDOWN_MS = 30000;
 const CONTACT_COOLDOWN_STORAGE_KEY = "zonumi.contact.cooldown.until";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ContactForm() {
   const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID ?? "");
@@ -43,13 +44,27 @@ export function ContactForm() {
     }
 
     const form = event.currentTarget;
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    const formData = new FormData(form);
+    const nameValue = String(formData.get("name") ?? "").trim();
+    const emailValue = String(formData.get("email") ?? "").trim();
+    const messageValue = String(formData.get("message") ?? "").trim();
+    const honeypotValue = String(formData.get("_gotcha") ?? "").trim();
+
+    if (nameValue.length < 2 || nameValue.length > 80) {
+      setClientError("Name must be between 2 and 80 characters.");
       return;
     }
 
-    const formData = new FormData(form);
-    const honeypotValue = String(formData.get("_gotcha") ?? "").trim();
+    if (!EMAIL_PATTERN.test(emailValue) || emailValue.length > 120) {
+      setClientError("Please enter a valid email address.");
+      return;
+    }
+
+    if (messageValue.length < 20 || messageValue.length > 2000) {
+      setClientError("Message must be between 20 and 2000 characters.");
+      return;
+    }
+
     if (honeypotValue) {
       setClientError("Unable to submit this message.");
       return;
@@ -75,7 +90,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSafeSubmit} className="space-y-2">
+    <form onSubmit={handleSafeSubmit} noValidate className="space-y-2">
       <div className="space-y-1">
         <label htmlFor="contact-name" className="block text-[11px] font-semibold uppercase">
           Name
