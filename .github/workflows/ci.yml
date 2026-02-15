@@ -32,8 +32,18 @@ jobs:
           major-identifier: "major"
           prefix: v
 
+      - name: Check if tag exists
+        id: tag-check
+        run: |
+          git fetch --tags --force
+          if git rev-parse -q --verify "refs/tags/${{ steps.git-version.outputs.version }}" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.tag-check.outputs.exists == 'false'
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
