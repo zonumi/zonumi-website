@@ -113,9 +113,13 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
           ? "Project Finder"
           : "Contact Console";
 
-  const renderProjectFinder = () => (
-    <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
-      <nav className="mac-scroll max-h-[380px] overflow-y-auto border-2 border-black bg-[#f7f7f7] p-1">
+  const renderProjectFinder = (constrainedHeight = false) => (
+    <div className={`grid gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
+      <nav
+        className={`mac-scroll border-2 border-black bg-[#f7f7f7] p-1 ${
+          constrainedHeight ? "h-full overflow-y-scroll" : "max-h-[380px] overflow-y-auto"
+        }`}
+      >
         {engagements.map((engagement) => (
           <button
             key={engagement.slug}
@@ -131,7 +135,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         ))}
       </nav>
 
-      <article className="space-y-3 border-2 border-black bg-[#f7f7f7] p-3">
+      <article className={`space-y-3 border-2 border-black bg-[#f7f7f7] p-3 ${constrainedHeight ? "h-full overflow-y-scroll" : ""}`}>
         {selectedEngagement ? (
           <>
             <div>
@@ -226,62 +230,58 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         <div className="space-y-4">
           {activePanel === "about" ? (
             <>
-              <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr]">
-                <div className="space-y-4">
-                  <section className="mac-window">
-                    <div className="mac-titlebar">
-                      <span className="mac-dot" />
-                      <h1>System Profile</h1>
-                      <span className="mac-dot" />
+              <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr] xl:grid-rows-[auto_auto]">
+                <section className="mac-window xl:col-start-1 xl:row-start-1">
+                  <div className="mac-titlebar">
+                    <span className="mac-dot" />
+                    <h1>System Profile</h1>
+                    <span className="mac-dot" />
+                  </div>
+                  <div className="mac-window-content space-y-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide">{profile.company}</p>
+                      <h2 className="mt-1 text-lg">{profile.name}</h2>
                     </div>
-                    <div className="mac-window-content space-y-4">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide">{profile.company}</p>
-                        <h2 className="mt-1 text-lg">{profile.name}</h2>
+                    <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+                      <Markdown>{aboutSummaryContent}</Markdown>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="mac-window xl:col-start-2 xl:row-start-1">
+                  <div className="mac-titlebar">
+                    <span className="mac-dot" />
+                    <h2>Certifications & Education</h2>
+                    <span className="mac-dot" />
+                  </div>
+                  <div className="mac-window-content">
+                    {certificationsContent ? (
+                      <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
+                        <Markdown>{certificationsContent}</Markdown>
                       </div>
-                      <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                        <Markdown>{aboutSummaryContent}</Markdown>
-                      </div>
-                    </div>
-                  </section>
+                    ) : (
+                      <p className="text-sm">No certifications section found in profile content.</p>
+                    )}
+                  </div>
+                </section>
 
-                  <section className="mac-window">
-                    <div className="mac-titlebar">
-                      <span className="mac-dot" />
-                      <h2>Project Finder</h2>
-                      <span className="mac-dot" />
-                    </div>
-                    <div className="mac-window-content">{renderProjectFinder()}</div>
-                  </section>
-                </div>
+                <section className="mac-window xl:col-start-1 xl:row-start-2">
+                  <div className="mac-titlebar">
+                    <span className="mac-dot" />
+                    <h2>Project Finder</h2>
+                    <span className="mac-dot" />
+                  </div>
+                  <div className="mac-window-content h-[320px] xl:h-[460px]">{renderProjectFinder(true)}</div>
+                </section>
 
-                <div className="space-y-4 xl:self-start">
-                  <section className="mac-window">
-                    <div className="mac-titlebar">
-                      <span className="mac-dot" />
-                      <h2>Certifications & Education</h2>
-                      <span className="mac-dot" />
-                    </div>
-                    <div className="mac-window-content">
-                      {certificationsContent ? (
-                        <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-                          <Markdown>{certificationsContent}</Markdown>
-                        </div>
-                      ) : (
-                        <p className="text-sm">No certifications section found in profile content.</p>
-                      )}
-                    </div>
-                  </section>
-
-                  <section className="mac-window">
-                    <div className="mac-titlebar">
-                      <span className="mac-dot" />
-                      <h2>Skills Desk Accessory</h2>
-                      <span className="mac-dot" />
-                    </div>
-                    <div className="mac-scroll mac-window-content h-[360px] overflow-y-scroll xl:h-[560px]">{renderSkills()}</div>
-                  </section>
-                </div>
+                <section className="mac-window xl:col-start-2 xl:row-start-2">
+                  <div className="mac-titlebar">
+                    <span className="mac-dot" />
+                    <h2>Skills Desk Accessory</h2>
+                    <span className="mac-dot" />
+                  </div>
+                  <div className="mac-scroll mac-window-content h-[320px] overflow-y-scroll xl:h-[460px]">{renderSkills()}</div>
+                </section>
               </div>
             </>
           ) : (
