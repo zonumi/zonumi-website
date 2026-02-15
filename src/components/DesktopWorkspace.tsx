@@ -7,6 +7,7 @@ import type { Project, Profile } from "@/lib/markdown-utils";
 
 type Panel = "about" | "skills" | "projects" | "contact";
 type MenuKey = "file" | "view";
+type BootPhase = "booting" | "transitioning" | "ready";
 type WindowId =
   | "about-profile"
   | "about-certs"
@@ -228,6 +229,7 @@ function DesktopVerticalScroll({
 
 export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspaceProps) {
   const [hasMounted, setHasMounted] = useState(false);
+  const [bootPhase, setBootPhase] = useState<BootPhase>("booting");
   const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(projects[0]?.slug ?? "");
@@ -316,6 +318,27 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const bootDuration = prefersReducedMotion ? 450 : 2400;
+    const transitionDuration = prefersReducedMotion ? 150 : 1050;
+
+    const startTransitionTimer = window.setTimeout(() => {
+      setBootPhase("transitioning");
+    }, bootDuration);
+
+    const completeBootTimer = window.setTimeout(() => {
+      setBootPhase("ready");
+    }, bootDuration + transitionDuration);
+
+    return () => {
+      window.clearTimeout(startTransitionTimer);
+      window.clearTimeout(completeBootTimer);
+    };
+  }, [hasMounted]);
 
   useEffect(() => {
     const updateClock = () => {
@@ -813,87 +836,113 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
           isDesktopLayout ? 980 : "100%"
         );
 
+  const bootOverlay = bootPhase !== "ready" ? (
+    <div className={`boot-overlay ${bootPhase === "transitioning" ? "boot-overlay-transitioning" : ""}`} aria-hidden="true">
+      <div className="boot-overlay-frame">
+        <div className="boot-zonumi-mark">
+          <Image
+            src="/branding/brand/zonumi-menu-icon.png"
+            alt=""
+            width={52}
+            height={52}
+            priority
+            className="boot-zonumi-logo"
+          />
+        </div>
+        <p className="boot-zonumi-title">Welcome to Zonumi</p>
+        <div className="boot-progress" />
+      </div>
+    </div>
+  ) : null;
+
   if (!hasMounted) {
-    return <main className="desktop-desktop flex h-screen flex-col overflow-hidden" />;
+    return (
+      <main className="desktop-main desktop-main-booting">
+        {bootOverlay}
+      </main>
+    );
   }
 
   return (
-    <main className="desktop-desktop flex h-screen flex-col overflow-hidden">
-      <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
-          <Image
-            src="/branding/brand/zonumi-menu-icon.png"
-            alt="Zonumi"
-            width={18}
-            height={18}
-            priority
-            className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
-          />
-          {(["file", "view"] as MenuKey[]).map((menu) => (
-            <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
-              <button
-                type="button"
-                onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
-                className={`px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
-              >
-                {menu[0].toUpperCase() + menu.slice(1)}
-              </button>
-              {activeMenu === menu ? (
-                <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]">
-                  {MENU_ITEMS[menu].map((action) => (
-                    <button
-                      key={action.label}
-                      type="button"
-                      onClick={() => {
-                        if (action.windowId) {
-                          setActivePanel("about");
-                          showWindow(action.windowId);
-                          setActiveMenu(null);
-                          return;
-                        }
+    <main className={`desktop-main desktop-main-${bootPhase}`}>
+      <div className="desktop-shell desktop-desktop flex h-screen flex-col overflow-hidden">
+        <header className="desktop-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
+          <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
+            <Image
+              src="/branding/brand/zonumi-menu-icon.png"
+              alt="Zonumi"
+              width={18}
+              height={18}
+              priority
+              className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
+            />
+            {(["file", "view"] as MenuKey[]).map((menu) => (
+              <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
+                <button
+                  type="button"
+                  onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
+                  className={`px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
+                >
+                  {menu[0].toUpperCase() + menu.slice(1)}
+                </button>
+                {activeMenu === menu ? (
+                  <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]">
+                    {MENU_ITEMS[menu].map((action) => (
+                      <button
+                        key={action.label}
+                        type="button"
+                        onClick={() => {
+                          if (action.windowId) {
+                            setActivePanel("about");
+                            showWindow(action.windowId);
+                            setActiveMenu(null);
+                            return;
+                          }
 
-                        if (action.panel) {
-                          openPanel(action.panel);
-                          return;
-                        }
+                          if (action.panel) {
+                            openPanel(action.panel);
+                            return;
+                          }
 
-                        if (action.href && action.download) {
-                          const link = document.createElement("a");
-                          link.href = action.href;
-                          link.download = "Nuno Castilho CV.pdf";
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          setActiveMenu(null);
-                          return;
-                        }
+                          if (action.href && action.download) {
+                            const link = document.createElement("a");
+                            link.href = action.href;
+                            link.download = "Nuno Castilho CV.pdf";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            setActiveMenu(null);
+                            return;
+                          }
 
-                        if (action.href) {
-                          window.open(action.href, "_blank", "noreferrer");
-                          setActiveMenu(null);
-                        }
-                      }}
-                      className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ))}
+                          if (action.href) {
+                            window.open(action.href, "_blank", "noreferrer");
+                            setActiveMenu(null);
+                          }
+                        }}
+                        className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
+                      >
+                        {action.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ))}
 
-          <p className="ml-auto hidden text-[11px] sm:block">
-            {profile.company} <span className="px-1">|</span> {clockText}
-          </p>
-        </div>
-      </header>
+            <p className="ml-auto hidden text-[11px] sm:block">
+              {profile.company} <span className="px-1">|</span> {clockText}
+            </p>
+          </div>
+        </header>
 
-      <section className={`${isDesktopLayout ? "w-full flex-1 overflow-hidden px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
-        <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-full overflow-hidden" : "space-y-4"}`}>
-          {activePanel === "about" ? aboutWindows : singlePanelWindow}
-        </div>
-      </section>
+        <section className={`${isDesktopLayout ? "w-full flex-1 overflow-hidden px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
+          <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-full overflow-hidden" : "space-y-4"}`}>
+            {activePanel === "about" ? aboutWindows : singlePanelWindow}
+          </div>
+        </section>
+      </div>
+      {bootOverlay}
     </main>
   );
 }
