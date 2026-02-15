@@ -50,10 +50,10 @@ const CV_DOWNLOAD_PATH = "/files/nuno-castilho-cv.pdf";
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   file: [{ label: "Download CV", href: CV_DOWNLOAD_PATH, download: true }],
   view: [
-    { label: "User Profile", panel: "about", windowId: "about-profile" },
+    { label: "Profile", panel: "about", windowId: "about-profile" },
     { label: "Certifications", panel: "about", windowId: "about-certs" },
     { label: "Projects", panel: "about", windowId: "about-project" },
-    { label: "Skills Desk", panel: "about", windowId: "about-skills" }
+    { label: "Skills", panel: "about", windowId: "about-skills" }
   ]
 };
 
@@ -622,9 +622,9 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
   const panelTitle =
     activePanel === "about"
-      ? "User Profile"
+      ? "Profile"
       : activePanel === "skills"
-        ? "Skills Desk"
+        ? "Skills"
         : activePanel === "projects"
           ? "Projects"
           : "Contact Console";
@@ -741,7 +741,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     <>
       {renderWindowFrame(
         "about-profile",
-        "System Profile",
+        "Profile",
         <>
           <p>{yearsExperience}+ years</p>
           <p>{projects.length} projects</p>
@@ -764,7 +764,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         <>
           <p>{certificationsCount} records</p>
           <p>2006-2018</p>
-          <p>Professional track</p>
+          <p>accreditations</p>
         </>,
         <div className="desktop-window-content">
           {certificationsContent ? (
@@ -780,11 +780,11 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
       {renderWindowFrame(
         "about-project",
-        "Project Explorer",
+        "Projects",
         <>
           <p>{projects.length} projects</p>
           <p>{selectedProject?.technologies.length ?? 0} skills</p>
-          <p>{selectedProject?.period ?? "No period"}</p>
+          <p>{selectedProject?.period ?? "no period"}</p>
         </>,
         <div className="desktop-window-content h-[320px] overflow-hidden xl:h-[460px]">{renderProjectFinder(true)}</div>,
         860
@@ -792,11 +792,11 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
       {renderWindowFrame(
         "about-skills",
-        "Skills Desk",
+        "Skills",
         <>
           <p>{skillGroups} groups</p>
-          <p>{totalSkills} listed skills</p>
-          <p>Cloud + Delivery</p>
+          <p>{totalSkills} skills</p>
+          <p>cloud + delivery</p>
         </>,
         <div className="desktop-window-content h-[320px] overflow-hidden xl:h-[460px]">
           <DesktopVerticalScroll className="h-full min-h-0 border-2 border-black bg-[#f7f7f7]" contentClassName="p-3">
@@ -817,20 +817,20 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
           activePanel === "skills" ? (
             <>
               <p>{skillGroups} groups</p>
-              <p>{totalSkills} listed skills</p>
-              <p>Capability index</p>
+              <p>{totalSkills} skills</p>
+              <p>capability index</p>
             </>
           ) : activePanel === "projects" ? (
             <>
               <p>{projects.length} projects</p>
               <p>{selectedProject?.technologies.length ?? 0} skills</p>
-              <p>{selectedProject?.client ?? "No selection"}</p>
+              <p>{selectedProject?.client ?? "no selection"}</p>
             </>
           ) : (
             <>
               <p>3 quick actions</p>
-              <p>Email + LinkedIn + GitHub</p>
-              <p>Response ready</p>
+              <p>email + linkedin + github</p>
+              <p>response ready</p>
             </>
           ),
           <div className="desktop-window-content">
