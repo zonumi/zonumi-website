@@ -46,10 +46,10 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
 };
 
 const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
-  "about-profile": { x: 56, y: 24, z: 1 },
-  "about-certs": { x: 900, y: 24, z: 2 },
-  "about-skills": { x: 1000, y: 24, z: 3 },
-  "about-project": { x: 116, y: 304, z: 4 }
+  "about-profile": { x: 48, y: 24, z: 1 },
+  "about-certs": { x: 944, y: 30, z: 2 },
+  "about-skills": { x: 960, y: 292, z: 3 },
+  "about-project": { x: 64, y: 302, z: 4 }
 };
 const WINDOW_IDS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
 const WINDOW_POSITION_STORAGE_KEY = "zonumi.window-positions.v1";
@@ -145,7 +145,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   });
   const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>({
     "about-profile": true,
-    "about-certs": false,
+    "about-certs": true,
     "about-project": true,
     "about-skills": true
   });
