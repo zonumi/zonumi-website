@@ -1,34 +1,34 @@
 ---
 skills:
-  Languages: ["Groovy", "Java", "JavaScript", "Kotlin", "SQL", "TypeScript", "Visual Basic"]
-  AI Tooling: ["Claude Code", "Gemini", "GitHub Copilot", "Codex"]
-  Frontend & Web: ["Angular", "Bootstrap", "jQuery", "React", "Redux", "ASP", "CSS", "HTML", "VBScript"]
-  Cloud & Infrastructure: ["AWS", "Azure", "CloudFormation", "Docker", "EKS", "Fargate", "Kubernetes", "OpenShift", "RDS", "S3", "Terraform"]
+  Languages: ["Java", "Kotlin", "JavaScript", "Visual Basic", "Groovy", "SQL", "TypeScript", "Bash"]
+  AI Tooling: ["Claude Code", "GitHub Copilot", "Codex", "Gemini"]
+  Frontend & Web: ["React", "Redux", "Angular", "jQuery", "Bootstrap", "ASP", "CSS", "HTML", "VBScript"]
+  Cloud & Infrastructure: ["AWS", "EKS", "Kubernetes", "Fargate", "RDS", "S3", "Terraform", "Docker", "OpenShift", "Azure", "CloudFormation"]
   Java Frameworks & Libraries:
     [
+      "Spring Boot",
+      "Spring Cloud Gateway",
+      "Spring WebFlux",
+      "Spring Security",
+      "Spring Cloud",
+      "Spring MVC",
+      "Spring",
+      "Spring Webflow",
       "Hibernate",
       "Java EE",
       "JPA",
       "JSF",
-      "Spock",
-      "Spring",
-      "Spring Boot",
-      "Spring Cloud",
-      "Spring Cloud Gateway",
-      "Spring MVC",
-      "Spring Security",
-      "Spring Webflow",
-      "Spring WebFlux"
+      "Spock"
     ]
-  Middleware & Application Platforms: ["Node.js", "JBoss", "Jetty", "OSGi", "Tomcat", "WebCenter", "WebSphere Commerce"]
+  Middleware & Application Platforms: ["Node.js", "Jetty", "OSGi", "Tomcat", "WebSphere Commerce", "JBoss", "WebCenter"]
   Integration & Messaging:
     [
-      "Apache Camel",
-      "Spring Integration",
+      "SQS",
       "Kafka",
+      "Apache Camel",
       "Kinesis",
       "RabbitMQ",
-      "SQS",
+      "Spring Integration",
       "Apigee",
       "IBM AS/400",
       "JSR286",
@@ -36,34 +36,8 @@ skills:
       "Salesforce",
       "WSRP"
     ]
-  Data Stores, Search & Migration: ["Couchbase", "DynamoDB", "Elasticsearch", "Flyway", "MongoDB", "MySQL", "Oracle", "PostgreSQL", "Redis"]
-  Build, CI/CD & Quality: ["Gradle", "Maven", "ClearCase", "GitHub Actions", "GitLab CI", "Jenkins", "Nexus", "Octopus", "SonarQube", "TeamCity"]
-  Security & Identity: ["JWT", "OAuth2", "SAML2"]
-  Engineering Practices & Observability: ["Agile", "BDD", "Cucumber", "Event Sourcing", "Microservices", "Observability", "OpenTelemetry", "SOLID", "TDD", "X-Ray"]
-  Developer Tooling, Operations & Networking:
-    [
-      "Eclipse",
-      "Jira",
-      "JMeter",
-      "Desktop Installation",
-      "Desktop Rollout",
-      "Network Administration",
-      "Shell Scripting",
-      "Small Office Networks",
-      "Technical Support",
-      "Active Directory",
-      "DHCP",
-      "DNS",
-      "Exchange 2000",
-      "IIS5",
-      "ISA 2000/2004",
-      "POP3",
-      "SMTP",
-      "VPN",
-      "Windows",
-      "Windows 2000",
-      "Windows NT",
-      "Windows NT4",
-      "WINS"
-    ]
+  Data Stores, Search & Migration: ["PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
+  Build, CI/CD & Quality: ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "Gradle", "Nexus", "TeamCity"]
+  Security & Identity: ["SAML2", "JWT", "OAuth2"]
+  Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Microservices", "Observability", "Agile", "SOLID", "Event Sourcing"]
 ---
