@@ -34,6 +34,19 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Contact Form (Formspree)
+
+The contact window uses Formspree via `@formspree/react`.
+
+Set this environment variable:
+
+```bash
+NEXT_PUBLIC_FORMSPREE_FORM_ID=<your-formspree-form-id>
+```
+
+For local development, put it in `.env.local`.  
+For deployment, set it in your hosting provider environment settings.
+
 ## Scripts
 
 - `npm run dev` - Start development server

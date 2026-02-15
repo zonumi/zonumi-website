@@ -10,7 +10,7 @@ export async function openWorkspace(page: Page) {
   await expect(page.locator(".boot-overlay")).toBeHidden({ timeout: 15_000 });
 }
 
-export async function clickMenuAction(page: Page, menu: "file" | "view", actionTestId: string) {
+export async function clickMenuAction(page: Page, menu: "file" | "view" | "help", actionTestId: string) {
   await page.getByTestId(`menu-trigger-${menu}`).click();
   await page.getByTestId(actionTestId).click();
 }

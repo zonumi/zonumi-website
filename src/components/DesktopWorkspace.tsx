@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
+import { ContactForm } from "@/components/ContactForm";
 import type { Project, Profile } from "@/lib/markdown-utils";
 
-type MenuKey = "file" | "view";
+type MenuKey = "file" | "view" | "help";
 type BootPhase = "booting" | "transitioning" | "ready";
-type WindowId = "about-profile" | "about-certs" | "about-project" | "about-skills";
+type WindowId = "about-profile" | "about-certs" | "about-project" | "about-skills" | "about-contact";
 
 type DesktopWorkspaceProps = {
   profile: Profile;
@@ -42,16 +43,18 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
     { label: "Certifications", windowId: "about-certs" },
     { label: "Projects", windowId: "about-project" },
     { label: "Skills", windowId: "about-skills" }
-  ]
+  ],
+  help: [{ label: "Contact...", windowId: "about-contact" }]
 };
 
 const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
   "about-profile": { x: 48, y: 24, z: 1 },
   "about-certs": { x: 944, y: 30, z: 2 },
   "about-skills": { x: 960, y: 292, z: 3 },
-  "about-project": { x: 64, y: 302, z: 4 }
+  "about-project": { x: 64, y: 302, z: 4 },
+  "about-contact": { x: 980, y: 120, z: 5 }
 };
-const WINDOW_IDS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
+const WINDOW_IDS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills", "about-contact"];
 const WINDOW_POSITION_STORAGE_KEY = "zonumi.window-positions.v1";
 
 const cloneWindows = (positions: Record<WindowId, WindowState>): Record<WindowId, WindowState> =>
@@ -147,7 +150,8 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     "about-profile": true,
     "about-certs": true,
     "about-project": true,
-    "about-skills": true
+    "about-skills": true,
+    "about-contact": false
   });
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
@@ -640,6 +644,20 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         </div>,
         470
       )}
+
+      {renderWindowFrame(
+        "about-contact",
+        "Contact",
+        <>
+          <p />
+          <p>message</p>
+          <p />
+        </>,
+        <div className="desktop-window-content">
+          <ContactForm />
+        </div>,
+        470
+      )}
     </>
   );
 
@@ -688,7 +706,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
             />
             <p className="text-xs font-semibold leading-none sm:text-sm">{profile.company}</p>
-            {(["file", "view"] as MenuKey[]).map((menu) => (
+            {(["file", "view", "help"] as MenuKey[]).map((menu) => (
               <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
                 <button
                   type="button"
