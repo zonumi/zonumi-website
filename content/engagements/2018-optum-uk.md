@@ -8,6 +8,7 @@ weight: 110
 ---
 Senior developer for a custom-built HR system for a healthcare and clinical platform based on iDempiere, OSGI (Equinox), Java 8, PostgreSQL, and Jetty 9.
 
+Achievements / Experience:
 - Integrated SAML2 SSO into the existing platform while working closely with architecture and infrastructure teams.
 - Implemented CI/CD and release strategy using Jenkins 2 declarative pipelines, Octopus, and Linux shell scripting.
 - Automated database baselines, OSGI plugin deployments, and SQL migration workflows.

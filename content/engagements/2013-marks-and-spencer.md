@@ -8,6 +8,7 @@ weight: 100
 ---
 Software engineer in the Multi Channel Foundation Programme, delivering new commerce capabilities and internal tooling on the retailer's WebSphere Commerce stack.
 
+Achievements / Experience:
 - Developed and supported Apigee APIs for new channels including iPad and in-store kiosk experiences.
 - Delivered full-stack internal tools using Java EE, Spring MVC/Data, MongoDB, and Tomcat.
 - Refined and supported a Spring/Hibernate/MySQL deployment-tracking tool through defect resolution, peer review, and refactoring.

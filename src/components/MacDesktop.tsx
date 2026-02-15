@@ -187,6 +187,26 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   }, []);
 
   useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+
+    if (isDesktopLayout) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+    } else {
+      html.style.overflow = previousHtmlOverflow;
+      body.style.overflow = previousBodyOverflow;
+    }
+
+    return () => {
+      html.style.overflow = previousHtmlOverflow;
+      body.style.overflow = previousBodyOverflow;
+    };
+  }, [isDesktopLayout]);
+
+  useEffect(() => {
     if (!isDesktopLayout) {
       dragRef.current = null;
       return;
@@ -198,8 +218,13 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
       if (!drag || !canvas) return;
 
       const rect = canvas.getBoundingClientRect();
-      const x = Math.max(0, event.clientX - rect.left - drag.offsetX);
-      const y = Math.max(0, event.clientY - rect.top - drag.offsetY);
+      const windowElement = canvas.querySelector<HTMLElement>(`[data-window-id="${drag.id}"]`);
+      const windowWidth = windowElement?.offsetWidth ?? 0;
+      const windowHeight = windowElement?.offsetHeight ?? 0;
+      const maxX = Math.max(0, rect.width - windowWidth);
+      const maxY = Math.max(0, rect.height - windowHeight);
+      const x = Math.min(maxX, Math.max(0, event.clientX - rect.left - drag.offsetX));
+      const y = Math.min(maxY, Math.max(0, event.clientY - rect.top - drag.offsetY));
 
       setWindowPositions((current) => ({
         ...current,
@@ -542,7 +567,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         );
 
   return (
-    <main className="mac-desktop min-h-screen">
+    <main className="mac-desktop flex h-screen flex-col overflow-hidden">
       <header className="mac-menu-bar border-b-2 border-black bg-white px-3 py-1 text-[11px] sm:px-5">
         <div className="mx-auto flex max-w-7xl items-center gap-2 sm:gap-3">
           <span className="text-base leading-none"></span>
@@ -595,8 +620,8 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         </div>
       </header>
 
-      <section className={`${isDesktopLayout ? "w-full px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
-        <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-[980px]" : "space-y-4"}`}>
+      <section className={`${isDesktopLayout ? "w-full flex-1 overflow-hidden px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
+        <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-full overflow-hidden" : "space-y-4"}`}>
           {activePanel === "about" ? aboutWindows : singlePanelWindow}
         </div>
       </section>

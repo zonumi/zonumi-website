@@ -8,6 +8,7 @@ weight: 108
 ---
 Lead developer for a self-service DevOps portal backend designed to reduce infrastructure provisioning time and improve inter-team coordination.
 
+Achievements / Experience:
 - Built a Java 8 REST API stack with Spring Boot, Spring Cloud, Spring Security, JWT, OAuth2, MongoDB, Eureka, RabbitMQ, and Apache Camel.
 - Supported a React and Node.js based portal experience through backend platform development.
 - Automated CI/CD and scaling workflows with Jenkins, Docker, and OpenShift.

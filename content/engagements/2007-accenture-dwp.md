@@ -8,6 +8,7 @@ weight: 98
 ---
 Senior developer and technical lead across DWP programmes (including PTP, ESA, ASD, and UC), responsible for portal architecture and delivery on JBoss and Oracle WebCenter using JSR286 remote portlets.
 
+Achievements / Experience:
 - Senior server-side developer on Java EE, Spring, and JPA/Hibernate services for client web applications.
 - Delivered team training and code quality assurance through review and refactoring of legacy code.
 - Designed and implemented internal systems and automated Java build/deploy jobs in the delivery pipeline.

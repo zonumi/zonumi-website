@@ -8,6 +8,7 @@ weight: 116
 ---
 Senior developer across multiple event-sourced insurance services supporting quote, conversion, and upsell journeys in direct and aggregator buy flows.
 
+Achievements / Experience:
 - Built and maintained a Java 11 mapping service to abstract quote comparison aggregators from the core sales platform.
 - Delivered Kotlin 1.5 / Spring Boot 2 services for upsell and quote conversion optimization using AWS SQS, DynamoDB, and Fargate.
 - Contributed to deployment automation using Bash and Python, and migrated several pipelines to GitHub Actions.

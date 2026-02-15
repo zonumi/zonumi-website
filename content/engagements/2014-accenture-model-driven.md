@@ -8,6 +8,7 @@ weight: 104
 ---
 Enhanced a data-gathering library in a Model Driven Development platform to provide a HATEOAS-compliant REST API using Spring, Webflow, and Spring Boot with MongoDB.
 
+Achievements / Experience:
 - Upgraded a legacy Eclipse Modelling Tool to Eclipse 4.
 - Automated the Jenkins distribution pipeline for stakeholder releases.
 - Improved legacy code quality through increased test coverage, refactoring, and better automation processes.
