@@ -76,11 +76,7 @@ test.describe("Zonumi desktop workspace", () => {
     expect(windowAfterBottomRightDrag.y + windowAfterBottomRightDrag.height).toBeLessThanOrEqual(canvasAfter.y + canvasAfter.height + 1);
   });
 
-  test("triggers CV file download from File menu", async ({ page }) => {
-    const downloadPromise = page.waitForEvent("download");
-    await clickMenuAction(page, "file", "menu-action-download-cv");
-    const download = await downloadPromise;
-
-    expect(download.suggestedFilename()).toBe("Nuno Castilho CV.pdf");
+  test("does not render File menu", async ({ page }) => {
+    await expect(page.getByTestId("menu-trigger-file")).toHaveCount(0);
   });
 });

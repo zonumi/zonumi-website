@@ -6,7 +6,7 @@ import Markdown from "react-markdown";
 import { ContactForm } from "@/components/ContactForm";
 import type { Project, Profile } from "@/lib/markdown-utils";
 
-type MenuKey = "file" | "view" | "help";
+type MenuKey = "view" | "help";
 type BootPhase = "booting" | "transitioning" | "ready";
 type WindowId = "about-profile" | "about-certs" | "about-project" | "about-skills" | "about-contact";
 
@@ -20,7 +20,6 @@ type MenuAction = {
   label?: string;
   href?: string;
   windowId?: WindowId;
-  download?: boolean;
   separator?: boolean;
   modal?: "about";
 };
@@ -36,10 +35,7 @@ const CERTIFICATIONS_WINDOW_TOP_RATIO = 0.2;
 const WINDOW_EDGE_GUTTER = 24;
 const BOOT_PROGRESS_STEPS = 14;
 
-const CV_DOWNLOAD_PATH = "/files/nuno-castilho-cv.pdf";
-
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
-  file: [{ label: "Download CV", href: CV_DOWNLOAD_PATH, download: true }],
   view: [
     { label: "Profile", windowId: "about-profile" },
     { label: "Certifications", windowId: "about-certs" },
@@ -717,7 +713,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               className="block h-[18px] w-[18px] shrink-0 translate-y-px object-cover object-center [image-rendering:pixelated]"
             />
             <p className="text-xs font-semibold leading-none sm:text-sm">{profile.company}</p>
-            {(["file", "view", "help"] as MenuKey[]).map((menu) => (
+            {(["view", "help"] as MenuKey[]).map((menu) => (
               <div key={menu} className="relative" onClick={(event) => event.stopPropagation()}>
                 <button
                   type="button"
@@ -745,17 +741,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
                             if (action.modal === "about") {
                               setIsAboutModalOpen(true);
-                              setActiveMenu(null);
-                              return;
-                            }
-
-                            if (action.href && action.download) {
-                              const link = document.createElement("a");
-                              link.href = action.href;
-                              link.download = "Nuno Castilho CV.pdf";
-                              document.body.appendChild(link);
-                              link.click();
-                              document.body.removeChild(link);
                               setActiveMenu(null);
                               return;
                             }
