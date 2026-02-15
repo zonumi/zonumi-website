@@ -496,7 +496,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   const renderWindowFrame = (
     id: WindowId,
     title: string,
-    subbar: ReactNode,
+    subbar: ReactNode | null,
     content: ReactNode,
     width: number | string,
     extraClass = ""
@@ -521,7 +521,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         />
         <h2>{title}</h2>
       </div>
-      <div className="desktop-subbar">{subbar}</div>
+      {subbar ? <div className="desktop-subbar">{subbar}</div> : null}
       {content}
     </section>
     ) : null
@@ -663,11 +663,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       {renderWindowFrame(
         "about-contact",
         "Contact",
-        <>
-          <p />
-          <p>message</p>
-          <p />
-        </>,
+        null,
         <div className="desktop-window-content">
           <ContactForm />
         </div>,
@@ -803,11 +799,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             <div className="desktop-titlebar">
               <button type="button" className="desktop-close-box" aria-label="Close About" onClick={() => setIsAboutModalOpen(false)} />
               <h2>About</h2>
-            </div>
-            <div className="desktop-subbar">
-              <p />
-              <p />
-              <p />
             </div>
             <div className="desktop-window-content space-y-2">
               <p className="text-sm">version {appVersion}</p>
