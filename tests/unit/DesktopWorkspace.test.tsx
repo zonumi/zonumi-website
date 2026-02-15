@@ -82,7 +82,7 @@ describe("DesktopWorkspace", () => {
     expect(within(projectWindow).getByText("Role Two")).toBeInTheDocument();
   });
 
-  it("opens, closes, and reopens the certifications window from the View menu", async () => {
+  it("opens, closes, and reopens the education window from the View menu", async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     renderReadyWorkspace();
 
@@ -92,23 +92,15 @@ describe("DesktopWorkspace", () => {
     expect(screen.queryByTestId("window-about-certs")).not.toBeInTheDocument();
 
     await user.click(screen.getByTestId("menu-trigger-view"));
-    await user.click(screen.getByTestId("menu-action-certifications"));
+    await user.click(screen.getByTestId("menu-action-education"));
 
     expect(screen.getByTestId("window-about-certs")).toBeInTheDocument();
   });
 
-  it("triggers a CV download from the File menu action", async () => {
+  it("does not render a File menu", async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    const anchorClickSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
-    try {
-      renderReadyWorkspace();
-
-      await user.click(screen.getByTestId("menu-trigger-file"));
-      await user.click(screen.getByTestId("menu-action-download-cv"));
-
-      expect(anchorClickSpy).toHaveBeenCalledTimes(1);
-    } finally {
-      anchorClickSpy.mockRestore();
-    }
+    renderReadyWorkspace();
+    await user.click(screen.getByTestId("menu-trigger-view"));
+    expect(screen.queryByTestId("menu-trigger-file")).not.toBeInTheDocument();
   });
 });

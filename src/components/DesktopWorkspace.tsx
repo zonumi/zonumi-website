@@ -31,14 +31,12 @@ type WindowState = {
 };
 
 const CERTIFICATIONS_WINDOW_WIDTH = 470;
-const CERTIFICATIONS_WINDOW_TOP_RATIO = 0.2;
-const WINDOW_EDGE_GUTTER = 24;
 const BOOT_PROGRESS_STEPS = 14;
 
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   view: [
     { label: "Profile", windowId: "about-profile" },
-    { label: "Certifications", windowId: "about-certs" },
+    { label: "Education", windowId: "about-certs" },
     { label: "Projects", windowId: "about-project" },
     { label: "Skills", windowId: "about-skills" }
   ],
@@ -430,24 +428,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   };
 
   const showWindow = (id: WindowId) => {
-    if (isDesktopLayout && id === "about-certs") {
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const rect = canvas.getBoundingClientRect();
-        const centeredX = Math.round((rect.width - CERTIFICATIONS_WINDOW_WIDTH) / 2);
-        const anchoredY = Math.round(rect.height * CERTIFICATIONS_WINDOW_TOP_RATIO);
-
-        setWindowPositions((current) => ({
-          ...current,
-          [id]: {
-            ...current[id],
-            x: Math.max(WINDOW_EDGE_GUTTER, centeredX),
-            y: Math.max(WINDOW_EDGE_GUTTER, anchoredY)
-          }
-        }));
-      }
-    }
-
     setWindowVisibility((current) => ({ ...current, [id]: true }));
     bringToFront(id);
   };
