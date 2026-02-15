@@ -62,10 +62,10 @@ const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
 };
 
 const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
-  "about-profile": { x: 20, y: 24, z: 1 },
+  "about-profile": { x: 56, y: 24, z: 1 },
   "about-certs": { x: 900, y: 24, z: 2 },
-  "about-project": { x: 20, y: 306, z: 3 },
-  "about-skills": { x: 900, y: 306, z: 4 },
+  "about-skills": { x: 1000, y: 24, z: 3 },
+  "about-project": { x: 136, y: 304, z: 4 },
   "panel-skills": { x: 56, y: 44, z: 5 },
   "panel-engagements": { x: 56, y: 44, z: 6 },
   "panel-contact": { x: 120, y: 72, z: 7 }
@@ -118,14 +118,14 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
   const [windowPositions, setWindowPositions] = useState(INITIAL_WINDOWS);
   const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>({
     "about-profile": true,
-    "about-certs": true,
+    "about-certs": false,
     "about-project": true,
     "about-skills": true,
     "panel-skills": true,
     "panel-engagements": true,
     "panel-contact": true
   });
-  const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-skills");
+  const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
@@ -477,8 +477,8 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
           <p>{totalSkills} listed skills</p>
           <p>Cloud + Delivery</p>
         </>,
-        <div className="mac-window-content h-[320px] overflow-hidden p-0 xl:h-[460px]">
-          <MacVerticalScroll className="h-full min-h-0" contentClassName="p-3">
+        <div className="mac-window-content h-[320px] overflow-hidden xl:h-[460px]">
+          <MacVerticalScroll className="h-full min-h-0 border-2 border-black bg-[#f7f7f7]" contentClassName="p-3">
             {renderSkills()}
           </MacVerticalScroll>
         </div>,

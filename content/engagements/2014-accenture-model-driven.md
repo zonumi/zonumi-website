@@ -6,8 +6,8 @@ logo: "/branding/clients/accenture.svg"
 technologies: ["Java", "Spring", "Spring Webflow", "Spring Boot", "MongoDB", "Jenkins", "Eclipse"]
 weight: 104
 ---
-Enhanced a model-driven development platform with modern API and build capabilities.
+Enhanced a data-gathering library in a Model Driven Development platform to provide a HATEOAS-compliant REST API using Spring, Webflow, and Spring Boot with MongoDB.
 
-- Extended a data-gathering library to expose HATEOAS-compliant REST APIs.
-- Upgraded a legacy Eclipse modeling toolchain and automated distribution with Jenkins.
-- Improved maintainability through focused testing and refactoring.
+- Upgraded a legacy Eclipse Modelling Tool to Eclipse 4.
+- Automated the Jenkins distribution pipeline.
+- Improved legacy code quality through increased testing and refactoring.

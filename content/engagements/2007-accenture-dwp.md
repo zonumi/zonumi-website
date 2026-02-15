@@ -6,8 +6,8 @@ logo: "/branding/clients/accenture.svg"
 technologies: ["Java", "Java EE", "Spring", "JPA", "Hibernate", "JBoss", "WebCenter", "JSR286", "Maven"]
 weight: 98
 ---
-Senior programmer in architecture-focused teams delivering large public-sector portal and platform capabilities.
+Senior programmer in the architecture team, responsible for development and supervision of client portal platforms on JBoss and WebCenter using JSR286 remote portlets.
 
-- Developed and supervised portal components on JBoss and WebCenter with remote portlet standards.
-- Delivered server-side services on Java EE, Spring, and JPA/Hibernate stacks.
-- Improved platform quality through code review, refactoring, and build/deploy automation.
+- Senior server-side developer on Java EE, Spring, and JPA/Hibernate services for client web applications.
+- Delivered team training and code quality assurance through review and refactoring of legacy code.
+- Designed and implemented internal systems and automated Java build and deploy jobs in the delivery pipeline.

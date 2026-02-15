@@ -6,8 +6,9 @@ logo: "/branding/clients/ladbrokes-coral.svg"
 technologies: ["Java", "Spring Boot", "PostgreSQL", "Kafka", "React", "Node.js", "Jenkins", "Terraform", "AWS", "TDD"]
 weight: 112
 ---
-Full-stack senior engineer on a cross-brand real-time sports campaign platform.
+Full-stack senior developer for a cross-brand application using real-time sports feeds powered by Kafka streams from OpenBet.
 
-- Built backend microservices for automated campaign flows driven by Kafka-powered sports feeds.
-- Delivered React and Node.js frontend capabilities supporting campaign operations.
-- Enabled one-click deployments using Jenkins pipelines and Terraform-managed AWS environments.
+- Built backend Java 8 / Spring Boot 2 / PostgreSQL microservices for automated campaigns through Salesforce Marketing Cloud.
+- Built frontend capabilities with React 15, ES6 JavaScript, and Node.js 8.
+- Worked with TDD and pair programming practices.
+- Delivered one-click deployments through Jenkins 2 CI/CD pipelines and Terraform-managed AWS infrastructure.

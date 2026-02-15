@@ -6,8 +6,7 @@ logo: "/branding/clients/optum.svg"
 technologies: ["Java", "PostgreSQL", "Jetty", "OSGi", "SAML2", "Shell Scripting"]
 weight: 110
 ---
-Senior engineer on a custom HR platform for healthcare and clinical operations.
+Senior developer for a custom-built HR system for a healthcare and clinical platform based on iDempiere, OSGI (Equinox), Java 8, PostgreSQL, and Jetty 9.
 
-- Integrated SAML2 single sign-on into the existing ERP-based platform.
-- Automated manual deployment steps with shell scripting.
-- Worked closely with architecture and infrastructure teams on platform integration.
+- Integrated SAML2 SSO into the existing platform while working closely with architecture and infrastructure teams.
+- Created shell scripts to automate previously manual deployment processes.

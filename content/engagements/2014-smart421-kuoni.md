@@ -6,8 +6,8 @@ logo: "/branding/clients/smart421-kuoni.svg"
 technologies: ["Java", "Spring", "MySQL", "Apache Camel", "Salesforce", "IBM AS/400", "jQuery", "Bootstrap"]
 weight: 102
 ---
-Delivered a multi-tenant travel itinerary application for agent workflows.
+Built a multi-tenant travel itinerary application for agents using Spring, MySQL, Salesforce, and IBM AS/400 integrations.
 
-- Built and integrated services across Salesforce and IBM AS/400 systems.
-- Migrated integration layers to Apache Camel and improved DTO mapping strategies.
-- Implemented responsive UI components with jQuery and Bootstrap.
+- Updated integration flows to Apache Camel.
+- Improved DTO mapping using XPath and Velocity-based mapping.
+- Led UI delivery with Bootstrap and jQuery for responsive multi-device support.
