@@ -65,9 +65,9 @@ const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
   "about-profile": { x: 56, y: 24, z: 1 },
   "about-certs": { x: 900, y: 24, z: 2 },
   "about-skills": { x: 1000, y: 24, z: 3 },
-  "about-project": { x: 136, y: 304, z: 4 },
+  "about-project": { x: 116, y: 304, z: 4 },
   "panel-skills": { x: 56, y: 44, z: 5 },
-  "panel-engagements": { x: 56, y: 44, z: 6 },
+  "panel-engagements": { x: 36, y: 44, z: 6 },
   "panel-contact": { x: 120, y: 72, z: 7 }
 };
 
@@ -595,7 +595,7 @@ export function MacDesktop({ profile, engagements }: MacDesktopProps) {
         </div>
       </header>
 
-      <section className={`${isDesktopLayout ? "w-full px-0 py-4 md:py-6" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
+      <section className={`${isDesktopLayout ? "w-full px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
         <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-[980px]" : "space-y-4"}`}>
           {activePanel === "about" ? aboutWindows : singlePanelWindow}
         </div>
