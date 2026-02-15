@@ -16,10 +16,15 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Zonumi Limited | Expert Software Engineering & Cloud-Native Consultancy",
+  title: "Portfolio - Nuno Castilho",
   description:
     "Digital HQ and technical portfolio for Nuno Castilho. Senior software engineering, cloud-native delivery, and consultancy projects.",
-  metadataBase: new URL("https://zonumi.com")
+  metadataBase: new URL("https://zonumi.com"),
+  icons: {
+    icon: "/branding/brand/zonumi-menu-icon.png",
+    shortcut: "/branding/brand/zonumi-menu-icon.png",
+    apple: "/branding/brand/zonumi-menu-icon.png"
+  }
 };
 
 export default function RootLayout({
