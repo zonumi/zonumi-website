@@ -190,6 +190,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   );
   const skillGroups = mergedSkills.length;
   const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
+  const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
   const certificationsCount = certificationsContent
     .split("\n")
     .filter((line) => line.trim().startsWith("- "))
@@ -809,7 +810,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               <p />
             </div>
             <div className="desktop-window-content space-y-2">
-              <p className="text-sm">version x.x.xx</p>
+              <p className="text-sm">version {appVersion}</p>
               <p className="text-sm">Built with Codex GPT 5.3.</p>
             </div>
           </section>
