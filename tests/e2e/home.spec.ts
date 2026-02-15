@@ -12,14 +12,14 @@ test.describe("Zonumi desktop workspace", () => {
     await expect(page.getByTestId("window-about-skills")).toBeVisible();
   });
 
-  test("opens and closes Certifications window via View menu", async ({ page }) => {
-    await expect(page.getByTestId("window-about-certs")).toHaveCount(0);
-
-    await clickMenuAction(page, "view", "menu-action-certifications");
+  test("closes and reopens Certifications window via View menu", async ({ page }) => {
     await expect(page.getByTestId("window-about-certs")).toBeVisible();
 
     await page.getByLabel("Close Certifications & Education").click();
     await expect(page.getByTestId("window-about-certs")).toHaveCount(0);
+
+    await clickMenuAction(page, "view", "menu-action-certifications");
+    await expect(page.getByTestId("window-about-certs")).toBeVisible();
   });
 
   test("updates project details when selecting a project from the finder", async ({ page }) => {
