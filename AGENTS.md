@@ -30,11 +30,13 @@ Typical local validation before PR:
 - Imports: use `@/*` alias for `src/*` paths when practical.
 
 ## Testing Guidelines
-There is currently no dedicated test runner configured. Until one is added:
+The repository includes both unit and end-to-end test runners:
 
-- Treat `npm run lint` and `npm run build` as required checks.
+- `npm run test:unit`: Run Jest unit tests.
+- `npm run test:e2e`: Run Playwright end-to-end tests.
+- Treat `npm run lint`, `npm run build`, `npm run test:unit`, and `npm run test:e2e` as required checks for code changes.
 - For content changes, verify affected pages in `npm run dev`.
-- If adding tests, keep them colocated or under a `tests/` folder and use `*.test.ts(x)` naming.
+- Keep tests under `tests/` and use `*.test.ts(x)` for unit tests; Playwright specs use `*.spec.ts`.
 
 ## Commit & Pull Request Guidelines
 - Prefer clear, imperative Conventional Commit-style messages like:
