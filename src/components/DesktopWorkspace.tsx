@@ -278,13 +278,14 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       setClockText(
         now.toLocaleTimeString("en-US", {
           hour: "numeric",
-          minute: "2-digit"
+          minute: "2-digit",
+          second: "2-digit"
         })
       );
     };
 
     updateClock();
-    const interval = window.setInterval(updateClock, 1000 * 30);
+    const interval = window.setInterval(updateClock, 1000);
     return () => window.clearInterval(interval);
   }, []);
 
