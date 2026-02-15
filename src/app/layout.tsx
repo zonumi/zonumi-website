@@ -20,6 +20,16 @@ export const metadata: Metadata = {
   description:
     "Digital HQ and technical portfolio for Nuno Castilho. Senior software engineering, cloud-native delivery, and consultancy projects.",
   metadataBase: new URL("https://zonumi.com"),
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true
+    }
+  },
   icons: {
     icon: "/branding/brand/zonumi-menu-icon.png",
     shortcut: "/branding/brand/zonumi-menu-icon.png",

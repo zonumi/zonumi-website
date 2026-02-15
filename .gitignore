@@ -1,4 +1,7 @@
 .next
+.next_fix_*
+.next_old_*
+.idea/
 node_modules
 npm-debug.log*
 yarn-debug.log*
