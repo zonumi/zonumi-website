@@ -6,7 +6,7 @@ This repository is a Next.js 15 + TypeScript site for Zonumi.
 - `src/app/`: App Router entrypoints (`layout.tsx`, `page.tsx`, global styles, loading UI).
 - `src/components/`: Reusable UI components (PascalCase files, e.g., `ProjectTimeline.tsx`).
 - `src/lib/`: Data/loading helpers (for example `markdown-utils.ts` reads markdown content).
-- `content/`: Source content in markdown (`profile.md` and `content/projects/*.md`).
+- `content/`: Source content in markdown (`profile.md`, `skills.md`, and `content/projects/*.md`).
 - `public/`: Static assets, including client logos under `public/branding/clients/`.
 - `artifacts/`: Visual snapshots/reference images used during design iterations.
 
@@ -37,7 +37,7 @@ There is currently no dedicated test runner configured. Until one is added:
 - If adding tests, keep them colocated or under a `tests/` folder and use `*.test.ts(x)` naming.
 
 ## Commit & Pull Request Guidelines
-- Current history mostly uses `WIP` commits; for new work, prefer clear, imperative messages like:
+- Prefer clear, imperative Conventional Commit-style messages like:
   - `feat: add timeline filter chips`
   - `fix: correct markdown skill parsing`
 - Keep commits focused by concern (UI, content, config).
