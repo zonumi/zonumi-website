@@ -40,6 +40,8 @@ Open `http://localhost:3000`.
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint checks
+- `npm run test:unit` - Run Jest unit/integration tests
+- `npm run test:e2e` - Run Playwright e2e tests
 
 ## Validation
 

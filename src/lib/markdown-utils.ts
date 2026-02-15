@@ -89,13 +89,3 @@ export function getSkills(): SkillsContent {
     content
   };
 }
-
-export function getTechnologies(projects: Project[]): string[] {
-  const uniqueTech = new Set<string>();
-
-  projects.forEach((project) => {
-    project.technologies.forEach((tech) => uniqueTech.add(tech));
-  });
-
-  return Array.from(uniqueTech).sort((a, b) => a.localeCompare(b));
-}

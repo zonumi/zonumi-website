@@ -5,17 +5,9 @@ import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } fro
 import Markdown from "react-markdown";
 import type { Project, Profile } from "@/lib/markdown-utils";
 
-type Panel = "about" | "skills" | "projects" | "contact";
 type MenuKey = "file" | "view";
 type BootPhase = "booting" | "transitioning" | "ready";
-type WindowId =
-  | "about-profile"
-  | "about-certs"
-  | "about-project"
-  | "about-skills"
-  | "panel-skills"
-  | "panel-projects"
-  | "panel-contact";
+type WindowId = "about-profile" | "about-certs" | "about-project" | "about-skills";
 
 type DesktopWorkspaceProps = {
   profile: Profile;
@@ -25,7 +17,6 @@ type DesktopWorkspaceProps = {
 
 type MenuAction = {
   label: string;
-  panel?: Panel;
   href?: string;
   windowId?: WindowId;
   download?: boolean;
@@ -42,18 +33,15 @@ const CERTIFICATIONS_WINDOW_TOP_RATIO = 0.2;
 const WINDOW_EDGE_GUTTER = 24;
 const BOOT_PROGRESS_STEPS = 14;
 
-const CONTACT_EMAIL = "nuno.castilho@outlook.com";
-const LINKEDIN_URL = "https://www.linkedin.com/in/nuno-castilho";
-const GITHUB_URL = "https://github.com/ncastilho";
 const CV_DOWNLOAD_PATH = "/files/nuno-castilho-cv.pdf";
 
 const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
   file: [{ label: "Download CV", href: CV_DOWNLOAD_PATH, download: true }],
   view: [
-    { label: "Profile", panel: "about", windowId: "about-profile" },
-    { label: "Certifications", panel: "about", windowId: "about-certs" },
-    { label: "Projects", panel: "about", windowId: "about-project" },
-    { label: "Skills", panel: "about", windowId: "about-skills" }
+    { label: "Profile", windowId: "about-profile" },
+    { label: "Certifications", windowId: "about-certs" },
+    { label: "Projects", windowId: "about-project" },
+    { label: "Skills", windowId: "about-skills" }
   ]
 };
 
@@ -61,28 +49,10 @@ const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
   "about-profile": { x: 56, y: 24, z: 1 },
   "about-certs": { x: 900, y: 24, z: 2 },
   "about-skills": { x: 1000, y: 24, z: 3 },
-  "about-project": { x: 116, y: 304, z: 4 },
-  "panel-skills": { x: 56, y: 44, z: 5 },
-  "panel-projects": { x: 36, y: 44, z: 6 },
-  "panel-contact": { x: 120, y: 72, z: 7 }
+  "about-project": { x: 116, y: 304, z: 4 }
 };
-const WINDOW_IDS: WindowId[] = [
-  "about-profile",
-  "about-certs",
-  "about-project",
-  "about-skills",
-  "panel-skills",
-  "panel-projects",
-  "panel-contact"
-];
+const WINDOW_IDS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
 const WINDOW_POSITION_STORAGE_KEY = "zonumi.window-positions.v1";
-
-const PANEL_WINDOW_MAP: Record<Exclude<Panel, "about">, WindowId> = {
-  skills: "panel-skills",
-  projects: "panel-projects",
-  contact: "panel-contact"
-};
-const ABOUT_WINDOWS: WindowId[] = ["about-profile", "about-certs", "about-project", "about-skills"];
 
 const cloneWindows = (positions: Record<WindowId, WindowState>): Record<WindowId, WindowState> =>
   WINDOW_IDS.reduce(
@@ -160,11 +130,9 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   const [hasMounted, setHasMounted] = useState(false);
   const [bootPhase, setBootPhase] = useState<BootPhase>("booting");
   const [bootProgress, setBootProgress] = useState(0);
-  const [activePanel, setActivePanel] = useState<Panel>("about");
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(projects[0]?.slug ?? "");
   const [clockText, setClockText] = useState("");
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const [isDesktopLayout, setIsDesktopLayout] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(min-width: 1024px)").matches;
@@ -179,10 +147,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     "about-profile": true,
     "about-certs": false,
     "about-project": true,
-    "about-skills": true,
-    "panel-skills": true,
-    "panel-projects": true,
-    "panel-contact": true
+    "about-skills": true
   });
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
@@ -409,7 +374,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
     const rafId = window.requestAnimationFrame(clampWindowPositionsToCanvas);
     return () => window.cancelAnimationFrame(rafId);
-  }, [isDesktopLayout, activePanel, windowVisibility, clampWindowPositionsToCanvas]);
+  }, [isDesktopLayout, windowVisibility, clampWindowPositionsToCanvas]);
 
   useEffect(() => {
     if (!isDesktopLayout) return;
@@ -497,45 +462,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     };
   };
 
-  const openPanel = (panel: Panel) => {
-    setActivePanel(panel);
-    setActiveMenu(null);
-
-    if (panel === "about") {
-      setWindowVisibility((current) => {
-        const next = { ...current };
-        ABOUT_WINDOWS.forEach((id) => {
-          next[id] = true;
-        });
-        return next;
-      });
-      bringToFront("about-profile");
-      return;
-    }
-
-    const panelWindow = PANEL_WINDOW_MAP[panel];
-    showWindow(panelWindow);
-  };
-
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      setCopiedEmail(true);
-      window.setTimeout(() => setCopiedEmail(false), 1500);
-    } catch {
-      window.location.href = `mailto:${CONTACT_EMAIL}`;
-    }
-  };
-
-  const panelTitle =
-    activePanel === "about"
-      ? "Profile"
-      : activePanel === "skills"
-        ? "Skills"
-        : activePanel === "projects"
-          ? "Projects"
-          : "Contact Console";
-
   const getWindowStyle = (id: WindowId, width: number | string) => {
     if (!isDesktopLayout) return undefined;
 
@@ -562,6 +488,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       style={getWindowStyle(id, width)}
       onMouseDown={() => (isDesktopLayout ? bringToFront(id) : null)}
       data-window-id={id}
+      data-testid={`window-${id}`}
     >
       <div className="desktop-titlebar desktop-drag-handle" onMouseDown={(event) => beginDrag(id, event)}>
         <button
@@ -592,6 +519,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             className={`block w-full border border-transparent px-2 py-1 text-left text-xs ${
               selectedProject?.slug === project.slug ? "bg-black text-white" : "hover:border-black"
             }`}
+            data-testid={`project-selector-${project.slug}`}
           >
             <span className="block font-semibold">{project.client}</span>
             <span className="block text-[11px]">{project.period}</span>
@@ -715,60 +643,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     </>
   );
 
-  const singlePanelWindow =
-    activePanel === "about"
-      ? null
-      : renderWindowFrame(
-          PANEL_WINDOW_MAP[activePanel],
-          panelTitle,
-          activePanel === "skills" ? (
-            <>
-              <p>{skillGroups} groups</p>
-              <p>{totalSkills} skills</p>
-              <p>capability index</p>
-            </>
-          ) : activePanel === "projects" ? (
-            <>
-              <p>{projects.length} projects</p>
-              <p>{selectedProject?.technologies.length ?? 0} skills</p>
-              <p>{selectedProject?.client ?? "no selection"}</p>
-            </>
-          ) : (
-            <>
-              <p>3 quick actions</p>
-              <p>email + linkedin + github</p>
-              <p>response ready</p>
-            </>
-          ),
-          <div className="desktop-window-content">
-            {activePanel === "skills" ? renderSkills() : null}
-            {activePanel === "projects" ? renderProjectFinder() : null}
-            {activePanel === "contact" ? (
-              <div className="space-y-4 text-sm">
-                <p>Use menu commands or quick actions below to contact Nuno.</p>
-                <div className="flex flex-wrap gap-2">
-                  <button type="button" onClick={handleCopyEmail} className="desktop-action">
-                    {copiedEmail ? "Email Copied" : "Copy Email"}
-                  </button>
-                  <a className="desktop-action" href={`mailto:${CONTACT_EMAIL}`}>
-                    Send Email
-                  </a>
-                  <a className="desktop-action" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
-                    Open LinkedIn
-                  </a>
-                  <a className="desktop-action" href={GITHUB_URL} target="_blank" rel="noreferrer">
-                    Open GitHub
-                  </a>
-                </div>
-                <p className="text-xs">
-                  Direct contact: <strong>{CONTACT_EMAIL}</strong>
-                </p>
-              </div>
-            ) : null}
-          </div>,
-          isDesktopLayout ? 980 : "100%"
-        );
-
   const bootOverlay = bootPhase !== "ready" ? (
     <div className={`boot-overlay ${bootPhase === "transitioning" ? "boot-overlay-transitioning" : ""}`} aria-hidden="true">
       <div className="boot-overlay-frame">
@@ -819,25 +693,20 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
                   type="button"
                   onClick={() => setActiveMenu((current) => (current === menu ? null : menu))}
                   className={`desktop-menu-trigger px-2 py-0.5 ${activeMenu === menu ? "bg-black text-white" : "hover:bg-black hover:text-white"}`}
+                  data-testid={`menu-trigger-${menu}`}
                 >
                   {menu[0].toUpperCase() + menu.slice(1)}
                 </button>
                 {activeMenu === menu ? (
-                  <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]">
+                  <div className="absolute left-0 top-[calc(100%+2px)] z-30 w-52 border-2 border-black bg-white p-1 shadow-[3px_3px_0_#000]" data-testid={`menu-dropdown-${menu}`}>
                     {MENU_ITEMS[menu].map((action) => (
                       <button
                         key={action.label}
                         type="button"
                         onClick={() => {
                           if (action.windowId) {
-                            setActivePanel("about");
                             showWindow(action.windowId);
                             setActiveMenu(null);
-                            return;
-                          }
-
-                          if (action.panel) {
-                            openPanel(action.panel);
                             return;
                           }
 
@@ -858,6 +727,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
                           }
                         }}
                         className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
+                        data-testid={`menu-action-${action.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                       >
                         {action.label}
                       </button>
@@ -874,8 +744,8 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
         </header>
 
         <section className={`${isDesktopLayout ? "w-full flex-1 overflow-hidden px-0 py-0" : "mx-auto w-full max-w-[1400px] px-3 py-4 sm:px-5 md:py-6"}`}>
-          <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-full overflow-hidden" : "space-y-4"}`}>
-            {activePanel === "about" ? aboutWindows : singlePanelWindow}
+          <div ref={canvasRef} className={`relative ${isDesktopLayout ? "h-full overflow-hidden" : "space-y-4"}`} data-testid="desktop-canvas">
+            {aboutWindows}
           </div>
         </section>
       </div>
