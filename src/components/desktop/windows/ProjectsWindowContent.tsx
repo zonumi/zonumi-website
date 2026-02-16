@@ -5,18 +5,20 @@ type ProjectsWindowContentProps = {
   projects: Project[];
   selectedProject?: Project;
   selectedSlug: string;
+  isMobileLayout: boolean;
   onSelectSlug: (slug: string) => void;
 };
 
-export function ProjectsWindowContent({ projects, selectedProject, selectedSlug, onSelectSlug }: ProjectsWindowContentProps) {
+export function ProjectsWindowContent({ projects, selectedProject, selectedSlug, isMobileLayout, onSelectSlug }: ProjectsWindowContentProps) {
   return (
-    <div className="desktop-window-content h-[320px] overflow-hidden xl:h-[460px]">
+    <div className={`desktop-window-content ${isMobileLayout ? "" : "h-[320px] overflow-hidden xl:h-[460px]"}`}>
       <ProjectFinder
         projects={projects}
         selectedProject={selectedProject}
         selectedSlug={selectedSlug}
         onSelectSlug={onSelectSlug}
-        constrainedHeight
+        constrainedHeight={!isMobileLayout}
+        flattened={isMobileLayout}
       />
     </div>
   );

@@ -10,10 +10,46 @@ type ProjectFinderProps = {
   selectedProject?: Project;
   onSelectSlug: (slug: string) => void;
   constrainedHeight?: boolean;
+  flattened?: boolean;
 };
 
-export function ProjectFinder({ projects, selectedSlug, selectedProject, onSelectSlug, constrainedHeight = false }: ProjectFinderProps) {
+export function ProjectFinder({
+  projects,
+  selectedSlug,
+  selectedProject,
+  onSelectSlug,
+  constrainedHeight = false,
+  flattened = false
+}: ProjectFinderProps) {
   void selectedSlug;
+  if (flattened) {
+    return (
+      <div className="space-y-3">
+        {projects.map((project) => (
+          <article key={project.slug} className="space-y-3 border-2 border-black bg-[#f7f7f7] p-3">
+            <div>
+              <h3 className="text-base">{project.client}</h3>
+              <p className="text-xs">{project.role}</p>
+              <p className="text-xs">{project.period}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {project.technologies.map((tech) => (
+                <span key={`${project.slug}-${tech}`} className="border border-black bg-white px-2 py-0.5 text-[11px]">
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <div className="prose prose-sm max-w-none prose-p:my-2 prose-li:my-0.5">
+              <Markdown>{project.content}</Markdown>
+            </div>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className={`grid min-h-0 gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
       <DesktopVerticalScroll className={`min-h-0 border-2 border-black bg-[#f7f7f7] ${constrainedHeight ? "h-full" : "max-h-[380px]"}`} contentClassName="p-1">

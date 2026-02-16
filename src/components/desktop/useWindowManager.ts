@@ -150,6 +150,15 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
     });
   }, [isDesktopLayout, canvasRef]);
 
+  const resetDesktopLayout = useCallback(() => {
+    setWindowPositions(cloneWindows(INITIAL_WINDOWS));
+    setZCounter(Math.max(...WINDOW_IDS.map((id) => INITIAL_WINDOWS[id].z), 20));
+    setActiveWindowId("about-project");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(clampWindowPositionsToCanvas);
+    });
+  }, [clampWindowPositionsToCanvas]);
+
   useEffect(() => {
     if (!isDesktopLayout) return;
 
@@ -245,6 +254,7 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
     showWindow,
     closeWindow,
     beginDrag,
-    getWindowStyle
+    getWindowStyle,
+    resetDesktopLayout
   };
 }

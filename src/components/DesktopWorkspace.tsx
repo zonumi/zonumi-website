@@ -35,10 +35,15 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     if (typeof window === "undefined") return false;
     return window.matchMedia("(min-width: 1024px)").matches;
   });
+  const [isMobileLayout, setIsMobileLayout] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(max-width: 767px)").matches;
+  });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const wasDesktopLayoutRef = useRef(isDesktopLayout);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
-  const { windowVisibility, activeWindowId, bringToFront, showWindow, closeWindow, beginDrag, getWindowStyle } = useWindowManager({
+  const { windowVisibility, activeWindowId, bringToFront, showWindow, closeWindow, beginDrag, getWindowStyle, resetDesktopLayout } = useWindowManager({
     isDesktopLayout,
     canvasRef
   });
@@ -163,12 +168,29 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   }, []);
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const updateLayout = () => setIsDesktopLayout(media.matches);
+    const desktopMedia = window.matchMedia("(min-width: 1024px)");
+    const mobileMedia = window.matchMedia("(max-width: 767px)");
+    const updateLayout = () => {
+      setIsDesktopLayout(desktopMedia.matches);
+      setIsMobileLayout(mobileMedia.matches);
+    };
+
     updateLayout();
-    media.addEventListener("change", updateLayout);
-    return () => media.removeEventListener("change", updateLayout);
+    desktopMedia.addEventListener("change", updateLayout);
+    mobileMedia.addEventListener("change", updateLayout);
+    return () => {
+      desktopMedia.removeEventListener("change", updateLayout);
+      mobileMedia.removeEventListener("change", updateLayout);
+    };
   }, []);
+
+  useEffect(() => {
+    const wasDesktop = wasDesktopLayoutRef.current;
+    if (isDesktopLayout && !wasDesktop) {
+      resetDesktopLayout();
+    }
+    wasDesktopLayoutRef.current = isDesktopLayout;
+  }, [isDesktopLayout, resetDesktopLayout]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -223,7 +245,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
   return (
     <main className={`desktop-main desktop-main-${bootPhase}`}>
-      <div className="desktop-shell desktop-desktop flex h-screen flex-col overflow-hidden">
+      <div className={`desktop-shell desktop-desktop flex flex-col ${isDesktopLayout ? "h-screen overflow-hidden" : "min-h-screen overflow-visible"}`}>
         <MenuBar
           company={profile.company}
           clockText={clockText}
@@ -301,6 +323,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
               projects={projects}
               selectedProject={selectedProject}
               selectedSlug={selectedSlug}
+              isMobileLayout={isMobileLayout}
               onSelectSlug={setSelectedSlug}
             />
           </DesktopWindowFrame>
@@ -324,7 +347,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             onBeginDrag={(event) => beginDrag("about-skills", event)}
             onClose={() => closeWindow("about-skills")}
           >
-            <SkillsWindowContent mergedSkills={mergedSkills} />
+            <SkillsWindowContent mergedSkills={mergedSkills} isMobileLayout={isMobileLayout} />
           </DesktopWindowFrame>
 
           <DesktopWindowFrame
