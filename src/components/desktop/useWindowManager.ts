@@ -69,6 +69,34 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
 
+  const centerWindowInCanvas = useCallback(
+    (id: WindowId) => {
+      if (!isDesktopLayout) return;
+
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const windowElement = canvas.querySelector<HTMLElement>(`[data-window-id="${id}"]`);
+      if (!windowElement) return;
+
+      const maxX = Math.max(0, rect.width - windowElement.offsetWidth);
+      const maxY = Math.max(0, rect.height - windowElement.offsetHeight);
+      const x = Math.round(maxX / 2);
+      const y = Math.round(maxY / 2);
+
+      setWindowPositions((current) => ({
+        ...current,
+        [id]: {
+          ...current[id],
+          x,
+          y
+        }
+      }));
+    },
+    [isDesktopLayout, canvasRef]
+  );
+
   useEffect(() => {
     localStorage.setItem(WINDOW_POSITION_STORAGE_KEY, JSON.stringify(windowPositions));
   }, [windowPositions]);
@@ -205,8 +233,24 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
   };
 
   const showWindow = (id: WindowId) => {
+    const shouldCenterContactOnFirstOpen =
+      id === "about-contact" &&
+      isDesktopLayout &&
+      !windowVisibility[id] &&
+      windowPositions[id].x === INITIAL_WINDOWS[id].x &&
+      windowPositions[id].y === INITIAL_WINDOWS[id].y;
+
     setWindowVisibility((current) => ({ ...current, [id]: true }));
     bringToFront(id);
+
+    // Contact window should open centered when there is no persisted placement yet.
+    if (shouldCenterContactOnFirstOpen) {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          centerWindowInCanvas(id);
+        });
+      });
+    }
   };
 
   const closeWindow = (id: WindowId) => {
