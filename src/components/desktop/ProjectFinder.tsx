@@ -13,6 +13,17 @@ type ProjectFinderProps = {
   flattened?: boolean;
 };
 
+function getMobileProjectSummary(content: string) {
+  const sectionHeadingPattern = /\n+Achievements\s*\/\s*Experience:\s*$/im;
+  const match = content.match(sectionHeadingPattern);
+
+  if (!match || match.index === undefined) {
+    return content.trim();
+  }
+
+  return content.slice(0, match.index).trim();
+}
+
 export function ProjectFinder({
   projects,
   selectedSlug,
@@ -42,7 +53,7 @@ export function ProjectFinder({
             </div>
 
             <div className="prose prose-sm max-w-none prose-p:my-2 prose-li:my-0.5">
-              <Markdown>{project.content}</Markdown>
+              <Markdown>{getMobileProjectSummary(project.content)}</Markdown>
             </div>
           </article>
         ))}
