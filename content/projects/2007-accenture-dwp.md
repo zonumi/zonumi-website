@@ -3,7 +3,7 @@ client: "Accenture (DWP)"
 role: "Software Engineer"
 period: "Jan 2007 – May 2013"
 logo: "/branding/clients/accenture.svg"
-technologies: ["Java", "Java EE", "Spring", "Spring MVC", "JSF", "JPA", "Hibernate", "JBoss", "WebCenter", "JSR286", "WSRP", "Tomcat", "Maven", "ClearCase"]
+technologies: ["Java", "Java EE", "Spring", "Spring MVC", "JSF", "JPA", "Hibernate", "JBoss", "WebCenter", "JSR286", "WSRP", "Tomcat", "Maven", "ClearCase", "ClearQuest", "HP Quality Center"]
 weight: 98
 ---
 Senior developer and technical lead across DWP programmes (including PTP, ESA, ASD, and UC), responsible for portal architecture and delivery on JBoss and Oracle WebCenter using JSR286 remote portlets.

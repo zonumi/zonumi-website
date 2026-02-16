@@ -1,10 +1,10 @@
-- AWS Certified Developer - Associate (2018)
-- IBM WebSphere Commerce V7 Programming Essentials (2013)
-- IBM WebSphere Commerce V7 Foundation (2013)
-- JBoss Enterprise Portal Platform (JB321) (2012)
-- JBoss Application Administrator (JB336) (2012)
-- Advanced JBoss Administration (JB346) (2012)
-- IBM Essentials of Configuration Management with Rational ClearCase (SCM375) (2007)
-- IBM Mastering Rational ClearCase Administration for Windows (SCM470) (2007)
-- SUN Certified Programmer for Java 2 Platform 1.4 (2007)
-- First Class BSc (Hons) Computer Science, Kingston University (2006)
+- AWS Certified Developer Associate - 2018
+- IBM WebSphere Commerce V7 Programming Essentials - 2013
+- IBM WebSphere Commerce V7 Foundation - 2013
+- JBoss Enterprise Portal Platform (JB321) - 2012
+- JBoss Application Administrator (JB336) - 2012
+- Advanced JBoss Administration (JB346) - 2012
+- IBM Essentials of Configuration Management with Rational ClearCase (SCM375) - 2007
+- IBM Mastering Rational ClearCase Administration for Windows (SCM470) - 2007
+- SUN Certified Programmer for Java 2 Platform 1.4 - 2007
+- First Class BSc (Hons) Computer Science, Kingston University - 2006
