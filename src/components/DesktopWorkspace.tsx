@@ -54,7 +54,6 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
     [projects, selectedSlug]
   );
 
-  const yearsExperience = 17;
   const mergedSkills = useMemo(
     () =>
       Object.entries(skills).map(([group, groupSkills]) => ({
@@ -294,7 +293,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
             title="Profile"
             subbar={
               <>
-                <p>{yearsExperience}+ years</p>
+                <p />
                 <p />
                 <p>{totalSkills} skills</p>
               </>
@@ -316,9 +315,9 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
             title="Education"
             subbar={
               <>
+                <p />
+                <p />
                 <p>{certificationsCount} certifications</p>
-                <p />
-                <p />
               </>
             }
             width={CERTIFICATIONS_WINDOW_WIDTH}
