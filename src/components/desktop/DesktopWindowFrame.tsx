@@ -7,6 +7,7 @@ type DesktopWindowFrameProps = {
   id: WindowId;
   title: string;
   subbar: ReactNode | null;
+  subbarClassName?: string;
   width: number | string;
   isVisible: boolean;
   isActive: boolean;
@@ -23,6 +24,7 @@ export function DesktopWindowFrame({
   id,
   title,
   subbar,
+  subbarClassName = "",
   width,
   isVisible,
   isActive,
@@ -57,7 +59,7 @@ export function DesktopWindowFrame({
         />
         <h2>{title}</h2>
       </div>
-      {subbar ? <div className="desktop-subbar">{subbar}</div> : null}
+      {subbar ? <div className={`desktop-subbar ${subbarClassName}`}>{subbar}</div> : null}
       {children}
     </section>
   );

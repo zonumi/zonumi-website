@@ -350,11 +350,12 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
           <DesktopWindowFrame
             id="about-project"
             title="Projects"
+            subbarClassName="desktop-project-subbar"
             subbar={
               <>
                 <p>{projects.length} projects</p>
                 <p />
-                <p>{selectedProject?.period ?? "no period"}</p>
+                <p className="desktop-project-period">{selectedProject?.period ?? "no period"}</p>
               </>
             }
             width={860}

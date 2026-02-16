@@ -346,6 +346,16 @@ body {
   text-align: right;
 }
 
+.desktop-project-period {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.desktop-project-subbar {
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+}
+
 .desktop-skills-subbar-cell {
   display: flex;
   align-items: center;
