@@ -23,7 +23,7 @@ export function AboutModal({ isOpen, appVersion, onClose }: AboutModalProps) {
         <div className="desktop-subbar">
           <p />
           <p />
-          <p>version {appVersion}</p>
+          <p>{appVersion}</p>
         </div>
         <div className="desktop-window-content space-y-3">
           <p className="text-sm">
