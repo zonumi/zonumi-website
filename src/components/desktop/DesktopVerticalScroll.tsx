@@ -1,15 +1,22 @@
 "use client";
 
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, type RefObject, useRef } from "react";
 
 type DesktopVerticalScrollProps = {
   className?: string;
   contentClassName?: string;
   children: ReactNode;
+  contentRef?: RefObject<HTMLDivElement | null>;
 };
 
-export function DesktopVerticalScroll({ className, contentClassName, children }: DesktopVerticalScrollProps) {
+export function DesktopVerticalScroll({ className, contentClassName, children, contentRef }: DesktopVerticalScrollProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const setScrollElement = (element: HTMLDivElement | null) => {
+    scrollRef.current = element;
+    if (contentRef) {
+      contentRef.current = element;
+    }
+  };
 
   const scrollByAmount = (delta: number) => {
     scrollRef.current?.scrollBy({ top: delta, behavior: "smooth" });
@@ -17,7 +24,7 @@ export function DesktopVerticalScroll({ className, contentClassName, children }:
 
   return (
     <div className={`desktop-vscroll ${className ?? ""}`}>
-      <div ref={scrollRef} className={`desktop-vscroll-content ${contentClassName ?? ""}`}>
+      <div ref={setScrollElement} className={`desktop-vscroll-content ${contentClassName ?? ""}`}>
         {children}
       </div>
       <div className="desktop-vscroll-rail">

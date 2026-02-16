@@ -270,7 +270,16 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   };
 
   const handleSkillsTimelineChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSkillsTimelineIndex(Number(event.target.value));
+    const nextIndex = Number(event.target.value);
+    setSkillsTimelineIndex(nextIndex);
+
+    if (nextIndex >= skillsTimelineMax) return;
+
+    const projectIndex = skillsTimelineMax - 1 - nextIndex;
+    const project = projects[projectIndex];
+    if (!project) return;
+
+    setSelectedSlug(project.slug);
   };
 
   if (!hasMounted) {

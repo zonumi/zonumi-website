@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Markdown from "react-markdown";
 import { DesktopVerticalScroll } from "@/components/desktop/DesktopVerticalScroll";
 import type { Project } from "@/lib/markdown-utils";
@@ -32,7 +33,18 @@ export function ProjectFinder({
   constrainedHeight = false,
   flattened = false
 }: ProjectFinderProps) {
-  void selectedSlug;
+  const projectListContentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (flattened || !selectedSlug) return;
+
+    const projectList = projectListContentRef.current;
+    if (!projectList) return;
+
+    const selectedButton = projectList.querySelector<HTMLElement>(`[data-project-slug="${selectedSlug}"]`);
+    selectedButton?.scrollIntoView({ block: "nearest" });
+  }, [flattened, selectedSlug]);
+
   if (flattened) {
     return (
       <div className="space-y-3">
@@ -63,7 +75,11 @@ export function ProjectFinder({
 
   return (
     <div className={`grid min-h-0 gap-3 lg:grid-cols-[220px_1fr] ${constrainedHeight ? "h-full" : ""}`}>
-      <DesktopVerticalScroll className={`min-h-0 border-2 border-black bg-[#f7f7f7] ${constrainedHeight ? "h-full" : "max-h-[380px]"}`} contentClassName="p-1">
+      <DesktopVerticalScroll
+        className={`min-h-0 border-2 border-black bg-[#f7f7f7] ${constrainedHeight ? "h-full" : "max-h-[380px]"}`}
+        contentClassName="p-1"
+        contentRef={projectListContentRef}
+      >
         {projects.map((project) => (
           <button
             key={project.slug}
@@ -73,6 +89,7 @@ export function ProjectFinder({
               selectedProject?.slug === project.slug ? "bg-black text-white" : "hover:border-black"
             }`}
             data-testid={`project-selector-${project.slug}`}
+            data-project-slug={project.slug}
           >
             <span className="block font-semibold">{project.client}</span>
             <span className="block text-[11px]">{project.period}</span>
