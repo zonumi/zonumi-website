@@ -372,22 +372,25 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             subbar={
               <>
                 <p>{visibleSkillGroups} groups</p>
-                <p className="desktop-skills-active-project">{activeTimelineProject?.client ?? ""}</p>
-                <p className="desktop-skills-subbar-cell">
-                  <label className="desktop-skills-timeline" htmlFor="skills-timeline-slider">
-                    <span className="sr-only">Filter skills by project timeline</span>
-                    <input
-                      id="skills-timeline-slider"
-                      aria-label="Skills timeline filter"
-                      className="desktop-skills-timeline-slider"
-                      type="range"
-                      min={0}
-                      max={skillsTimelineMax}
-                      value={skillsTimelineIndex}
-                      disabled={isMobileLayout}
-                      onChange={handleSkillsTimelineChange}
-                    />
-                  </label>
+                <p className="desktop-skills-active-project">{isMobileLayout ? "" : activeTimelineProject?.client ?? ""}</p>
+                <p className={isMobileLayout ? "" : "desktop-skills-subbar-cell"}>
+                  {isMobileLayout ? (
+                    `${totalSkills} skills`
+                  ) : (
+                    <label className="desktop-skills-timeline" htmlFor="skills-timeline-slider">
+                      <span className="sr-only">Filter skills by project timeline</span>
+                      <input
+                        id="skills-timeline-slider"
+                        aria-label="Skills timeline filter"
+                        className="desktop-skills-timeline-slider"
+                        type="range"
+                        min={0}
+                        max={skillsTimelineMax}
+                        value={skillsTimelineIndex}
+                        onChange={handleSkillsTimelineChange}
+                      />
+                    </label>
+                  )}
                 </p>
               </>
             }
