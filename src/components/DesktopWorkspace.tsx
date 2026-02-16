@@ -92,7 +92,6 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
       }))
       .filter(({ skills: groupSkills }) => groupSkills.length > 0);
   }, [activeTimelineProject, mergedSkills]);
-  const visibleSkillGroups = filteredMergedSkills.length;
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
   const certificationsCount = education.content
     .split("\n")
@@ -295,7 +294,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
               <>
                 <p />
                 <p />
-                <p>{totalSkills} skills</p>
+                <p>full-stack engineer</p>
               </>
             }
             width={860}
@@ -338,7 +337,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
             subbarClassName="desktop-project-subbar"
             subbar={
               <>
-                <p>{projects.length} projects</p>
+                <p />
                 <p />
                 <p className="desktop-project-period">{selectedProject?.period ?? "no period"}</p>
               </>
@@ -366,7 +365,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
             title="Skills"
             subbar={
               <>
-                <p>{visibleSkillGroups} groups</p>
+                <p aria-hidden="true">&nbsp;</p>
                 <p className="desktop-skills-active-project">{isMobileLayout ? "" : activeTimelineProject?.client ?? ""}</p>
                 <p className={isMobileLayout ? "" : "desktop-skills-subbar-cell"}>
                   {isMobileLayout ? (
