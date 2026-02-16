@@ -316,9 +316,9 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
             title="Education"
             subbar={
               <>
-                <p>{certificationsCount} records</p>
+                <p>{certificationsCount} certifications</p>
                 <p />
-                <p>certifications</p>
+                <p />
               </>
             }
             width={CERTIFICATIONS_WINDOW_WIDTH}
