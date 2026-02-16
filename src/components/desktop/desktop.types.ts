@@ -1,4 +1,4 @@
-import type { Project, Profile } from "@/lib/markdown-utils";
+import type { Education, Project, Profile } from "@/lib/markdown-utils";
 
 export type MenuKey = "view" | "help";
 export type BootPhase = "booting" | "transitioning" | "ready";
@@ -6,6 +6,7 @@ export type WindowId = "about-profile" | "about-certs" | "about-project" | "abou
 
 export type DesktopWorkspaceProps = {
   profile: Profile;
+  education: Education;
   projects: Project[];
   skills: Record<string, string[]>;
 };

@@ -24,7 +24,7 @@ const MENUS: Array<{ key: MenuKey; items: MenuAction[] }> = [
   { key: "help", items: MENU_ITEMS.help }
 ];
 
-export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspaceProps) {
+export function DesktopWorkspace({ profile, education, projects, skills }: DesktopWorkspaceProps) {
   const [hasMounted, setHasMounted] = useState(false);
   const [bootPhase, setBootPhase] = useState<BootPhase>("booting");
   const [bootProgress, setBootProgress] = useState(0);
@@ -53,20 +53,6 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     () => projects.find((project) => project.slug === selectedSlug) ?? projects[0],
     [projects, selectedSlug]
   );
-
-  const [aboutSummaryContent, certificationsContent] = useMemo(() => {
-    const sectionHeadingPattern = /^##\s+Certifications and Education\s*$/im;
-    const match = profile.content.match(sectionHeadingPattern);
-
-    if (!match || match.index === undefined) {
-      return [profile.content.trim(), ""];
-    }
-
-    const heading = match[0];
-    const summary = profile.content.slice(0, match.index).trim();
-    const certifications = profile.content.slice(match.index + heading.length).trim();
-    return [summary, certifications];
-  }, [profile.content]);
 
   const yearsExperience = 17;
   const mergedSkills = useMemo(
@@ -109,7 +95,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   }, [activeTimelineProject, mergedSkills]);
   const visibleSkillGroups = filteredMergedSkills.length;
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
-  const certificationsCount = certificationsContent
+  const certificationsCount = education.content
     .split("\n")
     .filter((line) => line.trim().startsWith("- "))
     .length;
@@ -322,7 +308,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             onBeginDrag={(event) => beginDrag("about-profile", event)}
             onClose={() => closeWindow("about-profile")}
           >
-            <ProfileWindowContent profile={profile} aboutSummaryContent={aboutSummaryContent} />
+            <ProfileWindowContent profile={profile} />
           </DesktopWindowFrame>
 
           <DesktopWindowFrame
@@ -344,7 +330,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             onBeginDrag={(event) => beginDrag("about-certs", event)}
             onClose={() => closeWindow("about-certs")}
           >
-            <EducationWindowContent certificationsContent={certificationsContent} />
+            <EducationWindowContent educationContent={education.content} />
           </DesktopWindowFrame>
 
           <DesktopWindowFrame

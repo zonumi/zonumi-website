@@ -1,18 +1,18 @@
 import Markdown from "react-markdown";
 
 type EducationWindowContentProps = {
-  certificationsContent: string;
+  educationContent: string;
 };
 
-export function EducationWindowContent({ certificationsContent }: EducationWindowContentProps) {
+export function EducationWindowContent({ educationContent }: EducationWindowContentProps) {
   return (
     <div className="desktop-window-content">
-      {certificationsContent ? (
+      {educationContent ? (
         <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-li:my-0.5 prose-ul:my-2">
-          <Markdown>{certificationsContent}</Markdown>
+          <Markdown>{educationContent}</Markdown>
         </div>
       ) : (
-        <p className="text-sm">No certifications section found in profile content.</p>
+        <p className="text-sm">No education content found.</p>
       )}
     </div>
   );

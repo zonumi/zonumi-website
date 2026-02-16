@@ -19,6 +19,10 @@ export type Profile = {
   content: string;
 };
 
+export type Education = {
+  content: string;
+};
+
 export type SkillsContent = {
   skills: Record<string, string[]>;
   content: string;
@@ -27,6 +31,7 @@ export type SkillsContent = {
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 const PROJECTS_DIR = path.join(CONTENT_ROOT, "projects");
 const PROFILE_FILE = path.join(CONTENT_ROOT, "profile.md");
+const EDUCATION_FILE = path.join(CONTENT_ROOT, "education.md");
 const SKILLS_FILE = path.join(CONTENT_ROOT, "skills.md");
 
 function readMarkdownFile(filePath: string) {
@@ -86,6 +91,14 @@ export function getSkills(): SkillsContent {
 
   return {
     skills: normalizeSkills(data.skills),
+    content
+  };
+}
+
+export function getEducation(): Education {
+  const { content } = readMarkdownFile(EDUCATION_FILE);
+
+  return {
     content
   };
 }
