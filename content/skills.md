@@ -40,4 +40,30 @@ skills:
   Build, CI/CD & Quality: ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "Gradle", "Nexus", "TeamCity"]
   Security & Identity: ["SAML2", "JWT", "OAuth2"]
   Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Microservices", "Observability", "Agile", "SOLID", "Event Sourcing"]
+  Developer Tooling, Operations & Networking:
+    [
+      "Eclipse",
+      "Jira",
+      "JMeter",
+      "Desktop Installation",
+      "Desktop Rollout",
+      "Network Administration",
+      "Shell Scripting",
+      "Small Office Networks",
+      "Technical Support",
+      "Active Directory",
+      "DHCP",
+      "DNS",
+      "Exchange 2000",
+      "IIS5",
+      "ISA 2000/2004",
+      "POP3",
+      "SMTP",
+      "VPN",
+      "Windows",
+      "Windows 2000",
+      "Windows NT",
+      "Windows NT4",
+      "WINS"
+    ]
 ---
