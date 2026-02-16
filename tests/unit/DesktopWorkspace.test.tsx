@@ -1,5 +1,5 @@
 import type { ImgHTMLAttributes } from "react";
-import { act, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { DesktopWorkspace } from "@/components/DesktopWorkspace";
 import type { Profile, Project } from "@/lib/markdown-utils";
@@ -102,5 +102,26 @@ describe("DesktopWorkspace", () => {
     renderReadyWorkspace();
     await user.click(screen.getByTestId("menu-trigger-view"));
     expect(screen.queryByTestId("menu-trigger-file")).not.toBeInTheDocument();
+  });
+
+  it("filters skills by timeline slider and restores all skills on the rightmost position", () => {
+    renderReadyWorkspace();
+
+    const skillsWindow = screen.getByTestId("window-about-skills");
+    const slider = within(skillsWindow).getByLabelText("Skills timeline filter");
+
+    expect(within(skillsWindow).getByText("AWS")).toBeInTheDocument();
+    expect(within(skillsWindow).getByText("Node.js")).toBeInTheDocument();
+
+    fireEvent.change(slider, { target: { value: "1" } });
+
+    expect(within(skillsWindow).getByText("React")).toBeInTheDocument();
+    expect(within(skillsWindow).queryByText("Node.js")).not.toBeInTheDocument();
+    expect(within(skillsWindow).queryByText("AWS")).not.toBeInTheDocument();
+
+    fireEvent.change(slider, { target: { value: "2" } });
+
+    expect(within(skillsWindow).getByText("AWS")).toBeInTheDocument();
+    expect(within(skillsWindow).getByText("Node.js")).toBeInTheDocument();
   });
 });

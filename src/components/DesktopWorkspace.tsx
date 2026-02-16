@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { AboutModal } from "@/components/desktop/AboutModal";
 import { BootOverlay } from "@/components/desktop/BootOverlay";
 import { DesktopCanvas } from "@/components/desktop/DesktopCanvas";
@@ -40,6 +40,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
     return window.matchMedia("(max-width: 767px)").matches;
   });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [skillsTimelineIndex, setSkillsTimelineIndex] = useState(projects.length);
   const wasDesktopLayoutRef = useRef(isDesktopLayout);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,8 +77,37 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       })),
     [skills]
   );
-  const skillGroups = mergedSkills.length;
   const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
+  const skillsTimelineMax = projects.length;
+  const activeTimelineProject = useMemo(() => {
+    if (skillsTimelineIndex >= skillsTimelineMax) return null;
+    const projectIndex = skillsTimelineMax - 1 - skillsTimelineIndex;
+    return projects[projectIndex] ?? null;
+  }, [projects, skillsTimelineIndex, skillsTimelineMax]);
+  const filteredMergedSkills = useMemo(() => {
+    if (!activeTimelineProject) return mergedSkills;
+
+    const normalizedProjectTechnologies = activeTimelineProject.technologies.map((technology) => technology.trim().toLowerCase());
+
+    const matchesTechnology = (skill: string) => {
+      const normalizedSkill = skill.trim().toLowerCase();
+
+      return normalizedProjectTechnologies.some((technology) => {
+        if (technology === normalizedSkill) return true;
+        if (normalizedSkill.endsWith(` ${technology}`)) return true;
+        if (technology.endsWith(` ${normalizedSkill}`)) return true;
+        return false;
+      });
+    };
+
+    return mergedSkills
+      .map(({ group, skills: groupSkills }) => ({
+        group,
+        skills: groupSkills.filter(matchesTechnology)
+      }))
+      .filter(({ skills: groupSkills }) => groupSkills.length > 0);
+  }, [activeTimelineProject, mergedSkills]);
+  const visibleSkillGroups = filteredMergedSkills.length;
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
   const certificationsCount = certificationsContent
     .split("\n")
@@ -193,6 +223,10 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   }, [isDesktopLayout, resetDesktopLayout]);
 
   useEffect(() => {
+    setSkillsTimelineIndex((current) => Math.min(Math.max(current, 0), projects.length));
+  }, [projects.length]);
+
+  useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
     const previousHtmlOverflow = html.style.overflow;
@@ -233,6 +267,10 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
       window.open(action.href, "_blank", "noreferrer");
       setActiveMenu(null);
     }
+  };
+
+  const handleSkillsTimelineChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSkillsTimelineIndex(Number(event.target.value));
   };
 
   if (!hasMounted) {
@@ -333,9 +371,24 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             title="Skills"
             subbar={
               <>
-                <p>{skillGroups} groups</p>
-                <p />
-                <p>cloud + delivery</p>
+                <p>{visibleSkillGroups} groups</p>
+                <p className="desktop-skills-active-project">{activeTimelineProject?.client ?? ""}</p>
+                <p className="desktop-skills-subbar-cell">
+                  <label className="desktop-skills-timeline" htmlFor="skills-timeline-slider">
+                    <span className="sr-only">Filter skills by project timeline</span>
+                    <input
+                      id="skills-timeline-slider"
+                      aria-label="Skills timeline filter"
+                      className="desktop-skills-timeline-slider"
+                      type="range"
+                      min={0}
+                      max={skillsTimelineMax}
+                      value={skillsTimelineIndex}
+                      disabled={isMobileLayout}
+                      onChange={handleSkillsTimelineChange}
+                    />
+                  </label>
+                </p>
               </>
             }
             width={470}
@@ -347,7 +400,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
             onBeginDrag={(event) => beginDrag("about-skills", event)}
             onClose={() => closeWindow("about-skills")}
           >
-            <SkillsWindowContent mergedSkills={mergedSkills} isMobileLayout={isMobileLayout} />
+            <SkillsWindowContent mergedSkills={filteredMergedSkills} isMobileLayout={isMobileLayout} />
           </DesktopWindowFrame>
 
           <DesktopWindowFrame
