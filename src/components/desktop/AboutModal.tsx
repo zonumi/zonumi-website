@@ -20,9 +20,16 @@ export function AboutModal({ isOpen, appVersion, onClose }: AboutModalProps) {
           <button type="button" className="desktop-close-box" aria-label="Close About" onClick={onClose} />
           <h2>About</h2>
         </div>
-        <div className="desktop-window-content space-y-2">
-          <p className="text-sm">version {appVersion}</p>
-          <p className="text-sm">Built with Codex GPT 5.3.</p>
+        <div className="desktop-subbar">
+          <p />
+          <p />
+          <p>version {appVersion}</p>
+        </div>
+        <div className="desktop-window-content space-y-3">
+          <p className="text-sm">
+            This project is a retro desktop-style portfolio experience inspired by classic operating systems.
+          </p>
+          <p className="text-sm">Built with Next.js, TypeScript, and Codex GPT 5.3.</p>
         </div>
       </section>
     </div>
