@@ -37,7 +37,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
   });
   const [isMobileLayout, setIsMobileLayout] = useState(() => {
     if (typeof window === "undefined") return false;
-    return window.matchMedia("(max-width: 767px)").matches;
+    return window.matchMedia("(max-width: 1023px)").matches;
   });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [skillsTimelineIndex, setSkillsTimelineIndex] = useState(projects.length);
@@ -199,7 +199,7 @@ export function DesktopWorkspace({ profile, projects, skills }: DesktopWorkspace
 
   useEffect(() => {
     const desktopMedia = window.matchMedia("(min-width: 1024px)");
-    const mobileMedia = window.matchMedia("(max-width: 767px)");
+    const mobileMedia = window.matchMedia("(max-width: 1023px)");
     const updateLayout = () => {
       setIsDesktopLayout(desktopMedia.matches);
       setIsMobileLayout(mobileMedia.matches);
