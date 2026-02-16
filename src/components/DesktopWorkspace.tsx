@@ -402,7 +402,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
 
           <DesktopWindowFrame
             id="about-contact"
-            title="Contact me"
+            title="Contact"
             subbar={null}
             width={470}
             isVisible={windowVisibility["about-contact"]}
