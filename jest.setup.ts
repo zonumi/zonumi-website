@@ -18,3 +18,9 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: jest.fn()
   })
 });
+
+Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+  configurable: true,
+  writable: true,
+  value: jest.fn()
+});

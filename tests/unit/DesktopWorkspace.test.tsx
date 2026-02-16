@@ -18,6 +18,10 @@ const profile: Profile = {
   content: "Profile summary\n\n## Certifications and Education\n\n- Cert A\n- Cert B"
 };
 
+const education = {
+  content: "- Cert A\n- Cert B"
+};
+
 const projects: Project[] = [
   {
     slug: "proj-one",
@@ -41,7 +45,7 @@ const projects: Project[] = [
   }
 ];
 
-const skills = {
+const experience = {
   Engineering: ["React", "Node.js"],
   Cloud: ["AWS"]
 };
@@ -63,7 +67,7 @@ describe("DesktopWorkspace", () => {
   });
 
   const renderReadyWorkspace = () => {
-    render(<DesktopWorkspace profile={profile} projects={projects} skills={skills} />);
+    render(<DesktopWorkspace profile={profile} education={education} projects={projects} experience={experience} />);
     act(() => {
       jest.advanceTimersByTime(4000);
     });
@@ -104,24 +108,24 @@ describe("DesktopWorkspace", () => {
     expect(screen.queryByTestId("menu-trigger-file")).not.toBeInTheDocument();
   });
 
-  it("filters skills by timeline slider and restores all skills on the rightmost position", () => {
+  it("filters experience by timeline slider and restores all entries on the rightmost position", () => {
     renderReadyWorkspace();
 
-    const skillsWindow = screen.getByTestId("window-about-skills");
-    const slider = within(skillsWindow).getByLabelText("Skills timeline filter");
+    const experienceWindow = screen.getByTestId("window-about-experience");
+    const slider = within(experienceWindow).getByLabelText("Experience timeline filter");
 
-    expect(within(skillsWindow).getByText("AWS")).toBeInTheDocument();
-    expect(within(skillsWindow).getByText("Node.js")).toBeInTheDocument();
+    expect(within(experienceWindow).getByText("AWS")).toBeInTheDocument();
+    expect(within(experienceWindow).getByText("Node.js")).toBeInTheDocument();
 
     fireEvent.change(slider, { target: { value: "1" } });
 
-    expect(within(skillsWindow).getByText("React")).toBeInTheDocument();
-    expect(within(skillsWindow).queryByText("Node.js")).not.toBeInTheDocument();
-    expect(within(skillsWindow).queryByText("AWS")).not.toBeInTheDocument();
+    expect(within(experienceWindow).getByText("React")).toBeInTheDocument();
+    expect(within(experienceWindow).queryByText("Node.js")).not.toBeInTheDocument();
+    expect(within(experienceWindow).queryByText("AWS")).not.toBeInTheDocument();
 
     fireEvent.change(slider, { target: { value: "2" } });
 
-    expect(within(skillsWindow).getByText("AWS")).toBeInTheDocument();
-    expect(within(skillsWindow).getByText("Node.js")).toBeInTheDocument();
+    expect(within(experienceWindow).getByText("AWS")).toBeInTheDocument();
+    expect(within(experienceWindow).getByText("Node.js")).toBeInTheDocument();
   });
 });

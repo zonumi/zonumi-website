@@ -17,14 +17,14 @@ import { ContactWindowContent } from "@/components/desktop/windows/ContactWindow
 import { EducationWindowContent } from "@/components/desktop/windows/EducationWindowContent";
 import { ProfileWindowContent } from "@/components/desktop/windows/ProfileWindowContent";
 import { ProjectsWindowContent } from "@/components/desktop/windows/ProjectsWindowContent";
-import { SkillsWindowContent } from "@/components/desktop/windows/SkillsWindowContent";
+import { ExperienceWindowContent } from "@/components/desktop/windows/ExperienceWindowContent";
 
 const MENUS: Array<{ key: MenuKey; items: MenuAction[] }> = [
   { key: "view", items: MENU_ITEMS.view },
   { key: "help", items: MENU_ITEMS.help }
 ];
 
-export function DesktopWorkspace({ profile, education, projects, skills }: DesktopWorkspaceProps) {
+export function DesktopWorkspace({ profile, education, projects, experience }: DesktopWorkspaceProps) {
   const [hasMounted, setHasMounted] = useState(false);
   const [bootPhase, setBootPhase] = useState<BootPhase>("booting");
   const [bootProgress, setBootProgress] = useState(0);
@@ -40,7 +40,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
     return window.matchMedia("(max-width: 1023px)").matches;
   });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
-  const [skillsTimelineIndex, setSkillsTimelineIndex] = useState(projects.length);
+  const [experienceTimelineIndex, setExperienceTimelineIndex] = useState(projects.length);
   const wasDesktopLayoutRef = useRef(isDesktopLayout);
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,44 +54,44 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
     [projects, selectedSlug]
   );
 
-  const mergedSkills = useMemo(
+  const mergedExperience = useMemo(
     () =>
-      Object.entries(skills).map(([group, groupSkills]) => ({
+      Object.entries(experience).map(([group, groupEntries]) => ({
         group,
-        skills: groupSkills
+        entries: groupEntries
       })),
-    [skills]
+    [experience]
   );
-  const totalSkills = mergedSkills.reduce((sum, group) => sum + group.skills.length, 0);
-  const skillsTimelineMax = projects.length;
+  const totalExperience = mergedExperience.reduce((sum, group) => sum + group.entries.length, 0);
+  const experienceTimelineMax = projects.length;
   const activeTimelineProject = useMemo(() => {
-    if (skillsTimelineIndex >= skillsTimelineMax) return null;
-    const projectIndex = skillsTimelineMax - 1 - skillsTimelineIndex;
+    if (experienceTimelineIndex >= experienceTimelineMax) return null;
+    const projectIndex = experienceTimelineMax - 1 - experienceTimelineIndex;
     return projects[projectIndex] ?? null;
-  }, [projects, skillsTimelineIndex, skillsTimelineMax]);
-  const filteredMergedSkills = useMemo(() => {
-    if (!activeTimelineProject) return mergedSkills;
+  }, [projects, experienceTimelineIndex, experienceTimelineMax]);
+  const filteredMergedExperience = useMemo(() => {
+    if (!activeTimelineProject) return mergedExperience;
 
     const normalizedProjectTechnologies = activeTimelineProject.technologies.map((technology) => technology.trim().toLowerCase());
 
-    const matchesTechnology = (skill: string) => {
-      const normalizedSkill = skill.trim().toLowerCase();
+    const matchesTechnology = (entry: string) => {
+      const normalizedEntry = entry.trim().toLowerCase();
 
       return normalizedProjectTechnologies.some((technology) => {
-        if (technology === normalizedSkill) return true;
-        if (normalizedSkill.endsWith(` ${technology}`)) return true;
-        if (technology.endsWith(` ${normalizedSkill}`)) return true;
+        if (technology === normalizedEntry) return true;
+        if (normalizedEntry.endsWith(` ${technology}`)) return true;
+        if (technology.endsWith(` ${normalizedEntry}`)) return true;
         return false;
       });
     };
 
-    return mergedSkills
-      .map(({ group, skills: groupSkills }) => ({
+    return mergedExperience
+      .map(({ group, entries: groupEntries }) => ({
         group,
-        skills: groupSkills.filter(matchesTechnology)
+        entries: groupEntries.filter(matchesTechnology)
       }))
-      .filter(({ skills: groupSkills }) => groupSkills.length > 0);
-  }, [activeTimelineProject, mergedSkills]);
+      .filter(({ entries: groupEntries }) => groupEntries.length > 0);
+  }, [activeTimelineProject, mergedExperience]);
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
   const certificationsCount = education.content
     .split("\n")
@@ -207,7 +207,7 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
   }, [isDesktopLayout, resetDesktopLayout]);
 
   useEffect(() => {
-    setSkillsTimelineIndex((current) => Math.min(Math.max(current, 0), projects.length));
+    setExperienceTimelineIndex((current) => Math.min(Math.max(current, 0), projects.length));
   }, [projects.length]);
 
   useEffect(() => {
@@ -253,13 +253,13 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
     }
   };
 
-  const handleSkillsTimelineChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleExperienceTimelineChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextIndex = Number(event.target.value);
-    setSkillsTimelineIndex(nextIndex);
+    setExperienceTimelineIndex(nextIndex);
 
-    if (nextIndex >= skillsTimelineMax) return;
+    if (nextIndex >= experienceTimelineMax) return;
 
-    const projectIndex = skillsTimelineMax - 1 - nextIndex;
+    const projectIndex = experienceTimelineMax - 1 - nextIndex;
     const project = projects[projectIndex];
     if (!project) return;
 
@@ -361,27 +361,27 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
           </DesktopWindowFrame>
 
           <DesktopWindowFrame
-            id="about-skills"
-            title="Skills"
+            id="about-experience"
+            title="Experience"
             subbar={
               <>
                 <p aria-hidden="true">&nbsp;</p>
-                <p className="desktop-skills-active-project">{isMobileLayout ? "" : activeTimelineProject?.client ?? ""}</p>
-                <p className={isMobileLayout ? "" : "desktop-skills-subbar-cell"}>
+                <p className="desktop-experience-active-project">{isMobileLayout ? "" : activeTimelineProject?.client ?? ""}</p>
+                <p className={isMobileLayout ? "" : "desktop-experience-subbar-cell"}>
                   {isMobileLayout ? (
-                    `${totalSkills} skills`
+                    `${totalExperience} experience items`
                   ) : (
-                    <label className="desktop-skills-timeline" htmlFor="skills-timeline-slider">
-                      <span className="sr-only">Filter skills by project timeline</span>
+                    <label className="desktop-experience-timeline" htmlFor="experience-timeline-slider">
+                      <span className="sr-only">Filter experience by project timeline</span>
                       <input
-                        id="skills-timeline-slider"
-                        aria-label="Skills timeline filter"
-                        className="desktop-skills-timeline-slider"
+                        id="experience-timeline-slider"
+                        aria-label="Experience timeline filter"
+                        className="desktop-experience-timeline-slider"
                         type="range"
                         min={0}
-                        max={skillsTimelineMax}
-                        value={skillsTimelineIndex}
-                        onChange={handleSkillsTimelineChange}
+                        max={experienceTimelineMax}
+                        value={experienceTimelineIndex}
+                        onChange={handleExperienceTimelineChange}
                       />
                     </label>
                   )}
@@ -389,15 +389,15 @@ export function DesktopWorkspace({ profile, education, projects, skills }: Deskt
               </>
             }
             width={470}
-            isVisible={windowVisibility["about-skills"]}
-            isActive={activeWindowId === "about-skills"}
+            isVisible={windowVisibility["about-experience"]}
+            isActive={activeWindowId === "about-experience"}
             isDesktopLayout={isDesktopLayout}
-            style={getWindowStyle("about-skills", 470)}
-            onBringToFront={() => bringToFront("about-skills")}
-            onBeginDrag={(event) => beginDrag("about-skills", event)}
-            onClose={() => closeWindow("about-skills")}
+            style={getWindowStyle("about-experience", 470)}
+            onBringToFront={() => bringToFront("about-experience")}
+            onBeginDrag={(event) => beginDrag("about-experience", event)}
+            onClose={() => closeWindow("about-experience")}
           >
-            <SkillsWindowContent mergedSkills={filteredMergedSkills} isMobileLayout={isMobileLayout} />
+            <ExperienceWindowContent mergedExperience={filteredMergedExperience} isMobileLayout={isMobileLayout} />
           </DesktopWindowFrame>
 
           <DesktopWindowFrame

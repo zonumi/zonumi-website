@@ -15,7 +15,7 @@ A portfolio-style website for Zonumi built with Next.js 15, React 19, and TypeSc
 - `src/app/` - App Router pages, layout, and global styles
 - `src/components/` - Reusable UI components
 - `src/lib/` - Utility and data-loading helpers
-- `content/` - Markdown content (`profile`, `skills`, `projects`)
+- `content/` - Markdown content (`profile`, `experience`, `projects`)
 - `public/` - Static assets
 
 ## Getting Started

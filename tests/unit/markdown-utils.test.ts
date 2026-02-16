@@ -1,4 +1,4 @@
-import { getAllProjects, getProfile, getSkills } from "@/lib/markdown-utils";
+import { getAllProjects, getExperience, getProfile } from "@/lib/markdown-utils";
 
 describe("markdown-utils", () => {
   it("loads projects sorted by descending weight", () => {
@@ -22,13 +22,13 @@ describe("markdown-utils", () => {
     expect(profile.content.trim().length).toBeGreaterThan(0);
   });
 
-  it("loads normalized skills groups", () => {
-    const skills = getSkills();
+  it("loads normalized experience groups", () => {
+    const experience = getExperience();
 
-    expect(typeof skills.content).toBe("string");
-    expect(Object.keys(skills.skills).length).toBeGreaterThan(0);
+    expect(typeof experience.content).toBe("string");
+    expect(Object.keys(experience.experience).length).toBeGreaterThan(0);
 
-    Object.values(skills.skills).forEach((group) => {
+    Object.values(experience.experience).forEach((group) => {
       expect(Array.isArray(group)).toBe(true);
       expect(group.every((entry) => typeof entry === "string")).toBe(true);
     });

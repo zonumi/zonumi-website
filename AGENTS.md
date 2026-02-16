@@ -6,7 +6,7 @@ This repository is a Next.js 15 + TypeScript site for Zonumi.
 - `src/app/`: App Router entrypoints (`layout.tsx`, `page.tsx`, global styles, loading UI).
 - `src/components/`: Reusable UI components (PascalCase files, e.g., `ProjectTimeline.tsx`).
 - `src/lib/`: Data/loading helpers (for example `markdown-utils.ts` reads markdown content).
-- `content/`: Source content in markdown (`profile.md`, `skills.md`, and `content/projects/*.md`).
+- `content/`: Source content in markdown (`profile.md`, `experience.md`, and `content/projects/*.md`).
 - `public/`: Static assets, including client logos under `public/branding/clients/`.
 - `artifacts/`: Visual snapshots/reference images used during design iterations.
 

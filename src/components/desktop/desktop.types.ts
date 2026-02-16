@@ -2,13 +2,13 @@ import type { Education, Project, Profile } from "@/lib/markdown-utils";
 
 export type MenuKey = "view" | "help";
 export type BootPhase = "booting" | "transitioning" | "ready";
-export type WindowId = "about-profile" | "about-certs" | "about-project" | "about-skills" | "about-contact";
+export type WindowId = "about-profile" | "about-certs" | "about-project" | "about-experience" | "about-contact";
 
 export type DesktopWorkspaceProps = {
   profile: Profile;
   education: Education;
   projects: Project[];
-  skills: Record<string, string[]>;
+  experience: Record<string, string[]>;
 };
 
 export type MenuAction = {

@@ -1,5 +1,5 @@
 ---
-skills:
+experience:
   Languages: ["Java", "Kotlin", "JavaScript", "Visual Basic", "Groovy", "SQL", "TypeScript", "Bash"]
   AI Tooling: ["Claude Code", "GitHub Copilot", "Codex", "Gemini"]
   Frontend & Web: ["React", "Redux", "Angular", "jQuery", "Bootstrap", "ASP", "CSS", "HTML", "VBScript"]

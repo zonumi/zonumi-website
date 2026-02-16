@@ -63,7 +63,7 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
     "about-profile": true,
     "about-certs": true,
     "about-project": true,
-    "about-skills": true,
+    "about-experience": true,
     "about-contact": false
   });
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");

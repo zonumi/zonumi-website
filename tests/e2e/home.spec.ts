@@ -9,7 +9,7 @@ test.describe("Zonumi desktop workspace", () => {
   test("shows core about windows after boot", async ({ page }) => {
     await expect(page.getByTestId("window-about-profile")).toBeVisible();
     await expect(page.getByTestId("window-about-project")).toBeVisible();
-    await expect(page.getByTestId("window-about-skills")).toBeVisible();
+    await expect(page.getByTestId("window-about-experience")).toBeVisible();
   });
 
   test("closes and reopens Education window via View menu", async ({ page }) => {

@@ -23,8 +23,8 @@ export type Education = {
   content: string;
 };
 
-export type SkillsContent = {
-  skills: Record<string, string[]>;
+export type ExperienceContent = {
+  experience: Record<string, string[]>;
   content: string;
 };
 
@@ -32,20 +32,20 @@ const CONTENT_ROOT = path.join(process.cwd(), "content");
 const PROJECTS_DIR = path.join(CONTENT_ROOT, "projects");
 const PROFILE_FILE = path.join(CONTENT_ROOT, "profile.md");
 const EDUCATION_FILE = path.join(CONTENT_ROOT, "education.md");
-const SKILLS_FILE = path.join(CONTENT_ROOT, "skills.md");
+const EXPERIENCE_FILE = path.join(CONTENT_ROOT, "experience.md");
 
 function readMarkdownFile(filePath: string) {
   const raw = fs.readFileSync(filePath, "utf8");
   return matter(raw);
 }
 
-function normalizeSkills(value: unknown): Record<string, string[]> {
+function normalizeExperience(value: unknown): Record<string, string[]> {
   if (!value || typeof value !== "object") return {};
 
   return Object.fromEntries(
-    Object.entries(value as Record<string, unknown>).map(([group, skills]) => [
+    Object.entries(value as Record<string, unknown>).map(([group, entries]) => [
       String(group),
-      Array.isArray(skills) ? skills.map((skill) => String(skill)) : []
+      Array.isArray(entries) ? entries.map((entry) => String(entry)) : []
     ])
   );
 }
@@ -86,11 +86,11 @@ export function getProfile(): Profile {
   };
 }
 
-export function getSkills(): SkillsContent {
-  const { data, content } = readMarkdownFile(SKILLS_FILE);
+export function getExperience(): ExperienceContent {
+  const { data, content } = readMarkdownFile(EXPERIENCE_FILE);
 
   return {
-    skills: normalizeSkills(data.skills),
+    experience: normalizeExperience(data.experience),
     content
   };
 }
