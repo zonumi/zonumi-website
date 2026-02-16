@@ -10,7 +10,7 @@ export const MENU_ITEMS: Record<MenuKey, MenuAction[]> = {
     { label: "Projects", windowId: "about-project" },
     { label: "Skills", windowId: "about-skills" }
   ],
-  help: [{ label: "Contact...", windowId: "about-contact" }, { separator: true }, { label: "About", modal: "about" }]
+  help: [{ label: "Contact me...", windowId: "about-contact" }, { separator: true }, { label: "About", modal: "about" }]
 };
 
 export const INITIAL_WINDOWS: Record<WindowId, WindowState> = {
