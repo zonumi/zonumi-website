@@ -11,6 +11,7 @@ skills:
       "Spring WebFlux",
       "Spring Security",
       "Spring Cloud",
+      "Spring Batch",
       "Spring MVC",
       "Spring",
       "Spring Webflow",
@@ -20,7 +21,7 @@ skills:
       "JSF",
       "Spock"
     ]
-  Middleware & Application Platforms: ["Node.js", "Jetty", "OSGi", "Tomcat", "WebSphere Commerce", "JBoss", "WebCenter"]
+  Middleware & Application Platforms: ["Node.js", "Jetty", "OSGi", "Tomcat", "WebSphere Commerce", "JBoss", "WebCenter", "iDempiere"]
   Integration & Messaging:
     [
       "SQS",
@@ -37,12 +38,14 @@ skills:
       "WSRP"
     ]
   Data Stores, Search & Migration: ["PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
-  Build, CI/CD & Quality: ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "Gradle", "Nexus", "TeamCity"]
+  Build, CI/CD & Quality:
+    ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "ClearQuest", "HP Quality Center", "Gradle", "Nexus", "TeamCity"]
   Security & Identity: ["SAML2", "JWT", "OAuth2"]
-  Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Microservices", "Observability", "Agile", "SOLID", "Event Sourcing"]
+  Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Agile", "SOLID", "Event Sourcing"]
   Developer Tooling, Operations & Networking:
     [
       "Eclipse",
+      "Backstage",
       "Jira",
       "JMeter",
       "Desktop Installation",
