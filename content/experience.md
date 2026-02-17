@@ -1,9 +1,9 @@
 ---
 experience:
-  Languages: ["Java", "Kotlin", "JavaScript", "Visual Basic", "Groovy", "SQL", "TypeScript", "Bash"]
+  Languages: ["Java", "Kotlin", "JavaScript", "Groovy", "TypeScript", "Bash"]
   AI Tooling: ["Claude Code", "GitHub Copilot", "Codex", "Gemini"]
-  Frontend & Web: ["React", "Redux", "Angular", "jQuery", "Bootstrap", "ASP", "CSS", "HTML", "VBScript"]
-  Cloud & Infrastructure: ["AWS", "EKS", "Kubernetes", "Fargate", "RDS", "S3", "Terraform", "Docker", "OpenShift", "Azure", "CloudFormation"]
+  Frontend & Web: ["React", "Redux", "Angular", "jQuery", "Bootstrap", "CSS", "HTML"]
+  Cloud & Infrastructure: ["AWS", "Kubernetes", "Fargate", "EKS", "RDS", "S3", "Terraform", "Docker", "OpenShift", "Azure", "CloudFormation"]
   Java Frameworks & Libraries:
     [
       "Spring Boot",
@@ -14,11 +14,13 @@ experience:
       "Spring Batch",
       "Spring MVC",
       "Spring",
-      "Spring Webflow",
+      "Spring Web Flow",
       "Hibernate",
       "Java EE",
       "JPA",
-      "JSF",
+      "JSF", 
+      "JSP", 
+      "Thymeleaf",
       "Spock"
     ]
   Middleware & Application Platforms: ["Node.js", "Jetty", "OSGi", "Tomcat", "WebSphere Commerce", "JBoss", "WebCenter", "iDempiere"]
@@ -37,7 +39,7 @@ experience:
       "Salesforce",
       "WSRP"
     ]
-  Data Stores, Search & Migration: ["PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
+  Data Stores, Search & Migration: ["SQL", "PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
   Build, CI/CD & Quality:
     ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "ClearQuest", "HP Quality Center", "Gradle", "Nexus", "TeamCity"]
   Security & Identity: ["SAML2", "JWT", "OAuth2"]
@@ -45,13 +47,14 @@ experience:
   Developer Tooling, Operations & Networking:
     [
       "Eclipse",
+      "IntelliJ IDEA",
+      "VSCode",
       "Backstage",
       "Jira",
       "JMeter",
       "Desktop Installation",
       "Desktop Rollout",
       "Network Administration",
-      "Shell Scripting",
       "Small Office Networks",
       "Technical Support",
       "Active Directory",

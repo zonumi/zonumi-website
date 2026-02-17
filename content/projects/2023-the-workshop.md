@@ -3,7 +3,7 @@ client: "The Workshop"
 role: "Senior Software Engineer"
 period: "Jun 2023 – Sep 2023"
 logo: "/branding/clients/the-workshop.svg"
-technologies: ["Java", "Spring Boot", "PostgreSQL", "Kubernetes", "Backstage", "React", "SonarQube", "Docker", "Jira"]
+technologies: ["Java", "Spring Boot", "PostgreSQL", "GCP", "Kubernetes", "Backstage", "React", "SonarQube", "Docker", "Jira"]
 weight: 118
 ---
 Senior developer in the Engineering Security team, building a platform that provides security visibility across company verticals and products including casino platforms and crypto systems.
