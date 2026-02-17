@@ -108,10 +108,6 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
       .filter(({ entries: groupEntries }) => groupEntries.length > 0);
   }, [activeTimelineProject, mergedExperience]);
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
-  const certificationsCount = education.content
-    .split("\n")
-    .filter((line) => line.trim().startsWith("- "))
-    .length;
 
   useEffect(() => {
     setHasMounted(true);
@@ -333,7 +329,7 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
               <>
                 <p />
                 <p />
-                <p>{certificationsCount} certifications</p>
+                <p>certifications</p>
               </>
             }
             width={CERTIFICATIONS_WINDOW_WIDTH}
