@@ -17,6 +17,7 @@ export type MenuAction = {
   windowId?: WindowId;
   separator?: boolean;
   modal?: "about";
+  disabled?: boolean;
 };
 
 export type WindowState = {

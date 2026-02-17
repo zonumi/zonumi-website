@@ -19,7 +19,7 @@ import { ProfileWindowContent } from "@/components/desktop/windows/ProfileWindow
 import { ProjectsWindowContent } from "@/components/desktop/windows/ProjectsWindowContent";
 import { ExperienceWindowContent } from "@/components/desktop/windows/ExperienceWindowContent";
 
-const MENUS: Array<{ key: MenuKey; items: MenuAction[] }> = [
+const BASE_MENUS: Array<{ key: MenuKey; items: MenuAction[] }> = [
   { key: "view", items: MENU_ITEMS.view },
   { key: "help", items: MENU_ITEMS.help }
 ];
@@ -52,6 +52,21 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
   const selectedProject = useMemo(
     () => projects.find((project) => project.slug === selectedSlug) ?? projects[0],
     [projects, selectedSlug]
+  );
+  const menus = useMemo(
+    () =>
+      BASE_MENUS.map((menu) => {
+        if (menu.key !== "view") return menu;
+
+        return {
+          ...menu,
+          items: menu.items.map((item) => ({
+            ...item,
+            disabled: Boolean(item.windowId && windowVisibility[item.windowId])
+          }))
+        };
+      }),
+    [windowVisibility]
   );
 
   const mergedExperience = useMemo(
@@ -235,6 +250,8 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
   };
 
   const handleMenuAction = (action: MenuAction) => {
+    if (action.disabled) return;
+
     if (action.windowId) {
       showWindow(action.windowId);
       setActiveMenu(null);
@@ -280,7 +297,7 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
         <MenuBar
           company={profile.company}
           clockText={clockText}
-          menus={MENUS}
+          menus={menus}
           activeMenu={activeMenu}
           onToggleMenu={handleToggleMenu}
           onAction={handleMenuAction}

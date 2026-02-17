@@ -21,8 +21,11 @@ export function MenuDropdown({ menuKey, items, onAction }: MenuDropdownProps) {
           <button
             key={action.label}
             type="button"
-            onClick={() => onAction(action)}
-            className="block w-full px-2 py-1 text-left text-[11px] hover:bg-black hover:text-white"
+            onClick={() => (action.disabled ? null : onAction(action))}
+            disabled={action.disabled}
+            className={`block w-full px-2 py-1 text-left text-[11px] ${
+              action.disabled ? "text-[#b3b3b3]" : "hover:bg-black hover:text-white"
+            }`}
             data-testid={`menu-action-${slugifyActionLabel(action.label)}`}
           >
             {action.label}

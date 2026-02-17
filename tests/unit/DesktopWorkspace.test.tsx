@@ -108,6 +108,17 @@ describe("DesktopWorkspace", () => {
     expect(screen.queryByTestId("menu-trigger-file")).not.toBeInTheDocument();
   });
 
+  it("greys out visible windows in the View menu", async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    renderReadyWorkspace();
+
+    await user.click(screen.getByTestId("menu-trigger-view"));
+    expect(screen.getByTestId("menu-action-profile")).toBeDisabled();
+    expect(screen.getByTestId("menu-action-education")).toBeDisabled();
+    expect(screen.getByTestId("menu-action-projects")).toBeDisabled();
+    expect(screen.getByTestId("menu-action-experience")).toBeDisabled();
+  });
+
   it("filters experience by timeline slider and restores all entries on the rightmost position", () => {
     renderReadyWorkspace();
 
