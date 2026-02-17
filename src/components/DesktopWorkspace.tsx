@@ -198,6 +198,44 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
   }, []);
 
   useEffect(() => {
+    const handleProjectSelectorArrowNavigation = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+      if (activeWindowId !== "about-project") return;
+      if (projects.length === 0) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLElement &&
+        (activeElement.isContentEditable ||
+          activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          activeElement.tagName === "SELECT")
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const selectedIndex = projects.findIndex((project) => project.slug === selectedSlug);
+      const baseIndex = selectedIndex >= 0 ? selectedIndex : 0;
+      const nextIndex =
+        event.key === "ArrowDown"
+          ? Math.min(baseIndex + 1, projects.length - 1)
+          : Math.max(baseIndex - 1, 0);
+
+      const nextProject = projects[nextIndex];
+      if (!nextProject || nextProject.slug === selectedSlug) return;
+
+      setSelectedSlug(nextProject.slug);
+    };
+
+    window.addEventListener("keydown", handleProjectSelectorArrowNavigation);
+    return () => window.removeEventListener("keydown", handleProjectSelectorArrowNavigation);
+  }, [activeWindowId, projects, selectedSlug]);
+
+  useEffect(() => {
     const desktopMedia = window.matchMedia("(min-width: 1024px)");
     const mobileMedia = window.matchMedia("(max-width: 1023px)");
     const updateLayout = () => {
