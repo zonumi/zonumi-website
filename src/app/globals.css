@@ -287,11 +287,11 @@ body {
 }
 
 .desktop-window-active .desktop-titlebar {
-  background: repeating-linear-gradient(180deg, #bfbfbf 0, #bfbfbf 1px, #efefef 1px, #efefef 2px);
+  background: repeating-linear-gradient(180deg, #9f9f9f 0, #9f9f9f 1px, #d4d4d4 1px, #d4d4d4 2px);
 }
 
 .desktop-window-inactive .desktop-titlebar {
-  background: #d6d6d6;
+  background: repeating-linear-gradient(180deg, #e8e8e8 0, #e8e8e8 1px, #f5f5f5 1px, #f5f5f5 2px);
 }
 
 .desktop-titlebar h1,
@@ -307,7 +307,7 @@ body {
 
 .desktop-window-inactive .desktop-titlebar h1,
 .desktop-window-inactive .desktop-titlebar h2 {
-  color: #424242;
+  color: #5a5a5a;
 }
 
 .desktop-dot {
