@@ -206,17 +206,24 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
       if (event.metaKey || event.ctrlKey || event.altKey) return;
 
       const activeElement = document.activeElement;
-      if (
+      const isEditableFocus =
         activeElement instanceof HTMLElement &&
         (activeElement.isContentEditable ||
           activeElement.tagName === "INPUT" ||
           activeElement.tagName === "TEXTAREA" ||
-          activeElement.tagName === "SELECT")
-      ) {
+          activeElement.tagName === "SELECT");
+      const projectsWindow = document.querySelector<HTMLElement>('[data-window-id="about-project"]');
+      const focusInsideProjectsWindow =
+        activeElement instanceof HTMLElement && Boolean(projectsWindow?.contains(activeElement));
+
+      if (isEditableFocus && focusInsideProjectsWindow) {
         return;
       }
 
       event.preventDefault();
+      if (isEditableFocus && activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
 
       const selectedIndex = projects.findIndex((project) => project.slug === selectedSlug);
       const baseIndex = selectedIndex >= 0 ? selectedIndex : 0;

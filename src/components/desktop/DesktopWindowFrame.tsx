@@ -43,7 +43,20 @@ export function DesktopWindowFrame({
     <section
       className={`desktop-window ${isActive ? "desktop-window-active" : "desktop-window-inactive"} ${isDesktopLayout ? "absolute" : ""} ${extraClass}`}
       style={style}
-      onMouseDown={() => (isDesktopLayout ? onBringToFront() : null)}
+      onMouseDown={(event) => {
+        if (!isDesktopLayout) return;
+
+        const activeElement = document.activeElement;
+        if (
+          activeElement instanceof HTMLElement &&
+          !event.currentTarget.contains(activeElement) &&
+          activeElement.closest(".desktop-shell")
+        ) {
+          activeElement.blur();
+        }
+
+        onBringToFront();
+      }}
       data-window-id={id}
       data-testid={`window-${id}`}
     >
