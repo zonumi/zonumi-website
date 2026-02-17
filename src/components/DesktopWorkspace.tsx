@@ -295,11 +295,31 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
     setActiveMenu((current) => (current === key ? null : key));
   };
 
+  const scrollToWindowOnMobile = (windowId: string) => {
+    if (!isMobileLayout) return;
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const targetWindow = document.querySelector<HTMLElement>(`[data-window-id="${windowId}"]`);
+        if (!targetWindow) return;
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        targetWindow.scrollIntoView({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "start"
+        });
+      });
+    });
+  };
+
   const handleMenuAction = (action: MenuAction) => {
     if (action.disabled) return;
 
     if (action.windowId) {
       showWindow(action.windowId);
+      if (action.windowId === "about-contact") {
+        scrollToWindowOnMobile(action.windowId);
+      }
       setActiveMenu(null);
       return;
     }
