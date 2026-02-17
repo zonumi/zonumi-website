@@ -350,7 +350,7 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
               <>
                 <p />
                 <p />
-                <p>full-stack engineer</p>
+                <p className="desktop-profile-role">full-stack engineer</p>
               </>
             }
             width={860}

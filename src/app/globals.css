@@ -358,6 +358,10 @@ body {
   text-overflow: clip;
 }
 
+.desktop-profile-role {
+  white-space: nowrap;
+}
+
 .desktop-project-subbar {
   grid-template-columns: max-content minmax(0, 1fr) max-content;
 }

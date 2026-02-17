@@ -52,6 +52,14 @@ type UseWindowManagerParams = {
   canvasRef: RefObject<HTMLDivElement | null>;
 };
 
+const getDefaultWindowVisibility = (isDesktopLayout: boolean): Record<WindowId, boolean> => ({
+  "about-profile": true,
+  "about-certs": isDesktopLayout,
+  "about-project": true,
+  "about-experience": isDesktopLayout,
+  "about-contact": false
+});
+
 export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManagerParams) {
   const [windowPositions, setWindowPositions] = useState(() => getStoredWindowPositions() ?? cloneWindows(INITIAL_WINDOWS));
   const [zCounter, setZCounter] = useState(() => {
@@ -59,13 +67,7 @@ export function useWindowManager({ isDesktopLayout, canvasRef }: UseWindowManage
     if (!storedPositions) return 20;
     return Math.max(...WINDOW_IDS.map((id) => storedPositions[id].z), 20);
   });
-  const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>({
-    "about-profile": true,
-    "about-certs": true,
-    "about-project": true,
-    "about-experience": true,
-    "about-contact": false
-  });
+  const [windowVisibility, setWindowVisibility] = useState<Record<WindowId, boolean>>(() => getDefaultWindowVisibility(isDesktopLayout));
   const [activeWindowId, setActiveWindowId] = useState<WindowId>("about-project");
   const dragRef = useRef<{ id: WindowId; offsetX: number; offsetY: number } | null>(null);
 
