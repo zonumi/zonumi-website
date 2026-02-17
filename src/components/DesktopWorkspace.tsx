@@ -186,6 +186,11 @@ export function DesktopWorkspace({ profile, education, projects, experience }: D
       if (event.key !== "Escape") return;
       setActiveMenu(null);
       setIsAboutModalOpen(false);
+
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement && activeElement.closest(".desktop-shell")) {
+        activeElement.blur();
+      }
     };
 
     window.addEventListener("keydown", handleEscape);

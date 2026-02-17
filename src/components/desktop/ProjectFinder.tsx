@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 import Markdown from "react-markdown";
 import { DesktopVerticalScroll } from "@/components/desktop/DesktopVerticalScroll";
 import type { Project } from "@/lib/markdown-utils";
@@ -45,6 +45,32 @@ export function ProjectFinder({
     selectedButton?.scrollIntoView({ block: "nearest" });
   }, [flattened, selectedSlug]);
 
+  const handleSelectorKeyDown = (event: KeyboardEvent<HTMLButtonElement>, projectIndex: number) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+
+    event.preventDefault();
+
+    if (projects.length === 0) return;
+
+    const nextIndex =
+      event.key === "ArrowDown"
+        ? Math.min(projectIndex + 1, projects.length - 1)
+        : Math.max(projectIndex - 1, 0);
+
+    const nextProject = projects[nextIndex];
+    if (!nextProject) return;
+
+    onSelectSlug(nextProject.slug);
+
+    requestAnimationFrame(() => {
+      const projectList = projectListContentRef.current;
+      if (!projectList) return;
+
+      const nextButton = projectList.querySelector<HTMLButtonElement>(`[data-project-slug="${nextProject.slug}"]`);
+      nextButton?.focus();
+    });
+  };
+
   if (flattened) {
     return (
       <div className="space-y-3">
@@ -80,13 +106,14 @@ export function ProjectFinder({
         contentClassName="p-1"
         contentRef={projectListContentRef}
       >
-        {projects.map((project) => (
+        {projects.map((project, projectIndex) => (
           <button
             key={project.slug}
             type="button"
             onClick={() => onSelectSlug(project.slug)}
+            onKeyDown={(event) => handleSelectorKeyDown(event, projectIndex)}
             className={`block w-full border border-transparent px-2 py-1 text-left text-xs ${
-              selectedProject?.slug === project.slug ? "bg-black text-white" : "hover:border-black"
+              selectedProject?.slug === project.slug ? "bg-black text-white" : ""
             }`}
             data-testid={`project-selector-${project.slug}`}
             data-project-slug={project.slug}
