@@ -7,4 +7,4 @@
 - IBM Essentials of Configuration Management with Rational ClearCase (SCM375) - 2007
 - IBM Mastering Rational ClearCase Administration for Windows (SCM470) - 2007
 - SUN Certified Programmer for Java 2 Platform 1.4 - 2007
-- First Class BSc (Hons) Computer Science, Kingston University - 2006
+- **First Class BSc (Hons) Computer Science**, Kingston University - 2006
