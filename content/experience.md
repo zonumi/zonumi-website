@@ -1,9 +1,9 @@
 ---
 experience:
   Languages: ["Java", "Kotlin", "JavaScript", "Groovy", "TypeScript", "Bash"]
-  AI Tooling: ["Claude Code", "GitHub Copilot", "Codex", "Gemini"]
+  AI Tooling: ["Claude Code", "GitHub Copilot", "Codex", "Gemini", "OpenAI Codex"]
   Frontend & Web: ["React", "Redux", "Angular", "jQuery", "Bootstrap", "CSS", "HTML"]
-  Cloud & Infrastructure: ["AWS", "Kubernetes", "Fargate", "EKS", "RDS", "S3", "Terraform", "Docker", "OpenShift", "Azure", "CloudFormation"]
+  Cloud & Infrastructure: ["AWS", "Kubernetes", "Fargate", "EKS", "RDS", "S3", "Terraform", "Docker", "OpenShift", "Azure", "CloudFormation", "GCP"]
   Java Frameworks & Libraries:
     [
       "Spring Boot",
@@ -27,7 +27,9 @@ experience:
   Integration & Messaging:
     [
       "SQS",
+      "SNS",
       "Kafka",
+      "Apache Flink",
       "Apache Camel",
       "Kinesis",
       "RabbitMQ",
@@ -39,11 +41,11 @@ experience:
       "Salesforce",
       "WSRP"
     ]
-  Data Stores, Search & Migration: ["SQL", "PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
+  Data Stores, Search & Migration: ["SQL", "PostgreSQL", "MySQL", "Flyway", "DynamoDB", "Elasticsearch", "OpenSearch", "Oracle", "MongoDB", "Couchbase", "Redis"]
   Build, CI/CD & Quality:
     ["GitLab CI", "SonarQube", "GitHub Actions", "Jenkins", "Octopus", "Maven", "ClearCase", "ClearQuest", "HP Quality Center", "Gradle", "Nexus", "TeamCity"]
   Security & Identity: ["SAML2", "JWT", "OAuth2"]
-  Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Agile", "SOLID", "Event Sourcing"]
+  Engineering Practices & Observability: ["OpenTelemetry", "X-Ray", "TDD", "BDD", "Cucumber", "Agile", "SOLID", "Event Sourcing", "Microservices"]
   Developer Tooling, Operations & Networking:
     [
       "Eclipse",
