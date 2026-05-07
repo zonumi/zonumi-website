@@ -12,5 +12,5 @@ Achievements / Experience:
 - Developed and maintained event-driven search and indexing services using SNS/SQS, Spring Batch, and shared document builder frameworks to support reliable indexing, reindexing, and operational recovery flows.
 - Led migration of legacy infrastructure to Infrastructure as Code using Terraform and improved CI/CD workflows with GitHub Actions.
 - Contributed to search performance tuning, platform observability, and operational resilience across the search ecosystem.
-- Leveraged OpenAI Codex, Claude Code, and GitHub Copilot for accelerated development, refactoring, test scaffolding, and operational automation across Java and infrastructure codebases.
+- Leveraged OpenAI Codex and GitHub Copilot for accelerated development, refactoring, test scaffolding, and operational automation across Java and infrastructure codebases.
 - Worked closely with Product and Technology stakeholders to deliver search improvements, reduce operational risk, and evolve the platform architecture toward a cleaner service-oriented model.
